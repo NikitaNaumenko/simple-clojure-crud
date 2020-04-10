@@ -1,19 +1,10 @@
-compose-build:
-	docker-compose build
+prepare-db:
+	dropdb hs-dev --if-exists
+	createdb hs-dev
+	dropdb hs-test --if-exists
+	createdb hs-test
 
-compose-stop:
-	docker-compose stop
+setup: prepare-db
+	lein deps
+	lein migratus migrate
 
-compose:
-	docker-compose up -d
-
-compose-down:
-	docker-compose down -v || true
-
-# setup: compose-down compose-build db-drop db-prepare
-
-db-drop:
-	docker-compose exec db dropdb hs-dev
-db-create:
-	docker-compose exec db createdb hs-dev
-setup: compose-down compose-build compose db-drop db-create
