@@ -1,0 +1,43 @@
+---
+
+version: '3'
+
+services:
+
+  db:
+    image: postgres:12.2
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=123
+
+  # caddy:
+  #   build:
+  #     context: services/web-caddy
+  #     dockerfile: Dockerfile.development
+  #   ports:
+  #     - "2015:2015"
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - "./services/web-caddy/files/development/Caddyfile:/etc/Caddyfile"
+  #     - ./services/web-caddy/files/development/certs:/root/.caddy  # to save certificates on disk
+  #   depends_on:
+  #     - web
+
+  # web:
+  #   build:
+  #     context: services/web
+  #     dockerfile: Dockerfile
+  #   command: mix phx.server
+  #   ports:
+  #     - "4000:4000"
+  #   volumes:
+  #     - "./services/web:/app"
+  #   env_file:
+  #     - '.env'
+  #   depends_on:
+  #     - db
+volumes:
+  pgdata:
+
