@@ -17,7 +17,11 @@ jobs:
         make test-ci
     - name: Login to Docker Hub
       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login -u "${{ secrets.NICKNAME }}" --password-stdin docker.pkg.github.com
-    # - name: Build
-    #   run: make web-docker-build-production
-    # - name: Push
-    #   run: make web-docker-push
+    - name: Build
+      run: make app-docker-build-production
+    - name: Push
+      run: make app-docker-push
+    # - name: Build Caddy
+    #   run: make caddy-docker-build-production
+    # - name: Push Caddy
+    #   run: make caddy-docker-push

@@ -39,3 +39,16 @@ project-env-generate:
 		-v $(CURDIR)/ansible/development:/runner/inventory \
 		-v $(CURDIR):/runner/project \
 		ansible/ansible-runner
+
+app-docker-build-production:
+	docker build --cache-from=$(REGISTRY)/NikitaNaumenko/simple-clojure-crud/app --tag $(REGISTRY)/NikitaNaumenko/simple-clojure-crud/app:$(VERSION) services/app
+
+app-docker-push:
+	docker push $(REGISTRY)/NikitaNaumenko/simple-clojure-crud/app:$(VERSION)
+
+# caddy-docker-build-production:
+# 	docker build --file services/caddy/Dockerfile.production --tag $(REGISTRY)/sql-masters/sql-masters/services-caddy:$(VERSION) services/web-caddy
+
+# caddy-docker-push:
+# 	docker push docker.pkg.github.com/sql-masters/sql-masters/services-caddy:$(VERSION)
+
