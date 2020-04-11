@@ -1,0 +1,9 @@
+---
+
+- hosts: localhost
+  gather_facts: false
+  tasks:
+    - template:
+        src: environment.j2
+        dest: '/runner/project/.env'
+      tags: env

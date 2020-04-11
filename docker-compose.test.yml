@@ -1,19 +1,21 @@
 ---
 
-version: '3.7'
+version: '3.3'
 
 services:
   db:
     image: postgres:12.2
     environment:
       - POSTGRES_USER=docker
-      - POSTGRES_DB=hs-dev
+      - POSTGRES_DB=hs-test
       - POSTGRES_PASSWORD=docker
   test:
     build:
       context: .
       dockerfile: Dockerfile
     command: lein test
+    env_file:
+      - './.env.test'
     depends_on:
       - db
 

@@ -5,6 +5,7 @@
 (defn create-patient [patient]
   (sql/insert! ds :patients patient ))
 (defn get-patients []
+  (println (System/getenv "DB_HOSTNAME"))
   (sql/query ds ["SELECT * FROM patients"]))
 
 (defn get-patient [id]

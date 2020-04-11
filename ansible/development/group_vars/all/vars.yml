@@ -1,0 +1,8 @@
+db_classname: "org.postgresql.Driver"
+db_subprotocol: "postgres"
+db_subname: "//localhost:5432/hs-dev"
+db_username: "docker"
+db_password: "docker"
+db_name: "hs-dev"
+db_hostname: "localhost"
+

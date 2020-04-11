@@ -29,3 +29,13 @@ compose-migrate:
 	docker-compose run app lein migratus migrate
 
 compose-setup: compose-down compose-build compose-migrate
+
+project-files-touch:
+	mkdir -p tmp
+	if [ ! -f tmp/ansible-vault-password ]; then echo 'jopa' > tmp/ansible-vault-password; fi;
+
+project-env-generate:
+	docker run --rm -e RUNNER_PLAYBOOK=ansible/development.yml \
+		-v $(CURDIR)/ansible/development:/runner/inventory \
+		-v $(CURDIR):/runner/project \
+		ansible/ansible-runner

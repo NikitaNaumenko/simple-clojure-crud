@@ -16,11 +16,10 @@
   :ring {:handler hs-test.handler/app}
   :migratus {:store :database
            :migration-dir "migrations"
-           :db {:classname "org.postgresql.Driver"
-                :subprotocol "postgres"
-                :subname "//db:5432/hs-dev"
-                :user "docker"
-                :password "docker"
-                }}
+           :db {:classname (System/getenv "DB_CLASSNAME")
+                :subprotocol (System/getenv "DB_SUBPROTOCOL")
+                :subname (System/getenv "DB_SUBNAME")
+                :user (System/getenv "DB_USERNAME")
+                :password (System/getenv "DB_PASSWORD")}}
   :profiles
-  {:test {:prep-test [[ "migratus" "migrate"]]}})
+  {:test {:prep-tasks [[ "migratus" "migrate"]]}})
