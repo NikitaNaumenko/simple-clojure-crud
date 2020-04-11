@@ -10,6 +10,8 @@
                  [ring/ring-core "1.8.0"]
                  [compojure "1.6.1"]
                  [hiccup "1.0.5"]
+                 [ring/ring-mock "0.4.0"]
+
                  [ring/ring-jetty-adapter "1.8.0"]]
   :plugins [[migratus-lein "0.5.0"]
             [lein-ring "0.12.5"]]

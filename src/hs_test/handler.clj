@@ -23,6 +23,8 @@
   (views/new-p))
 
 (defn create [params]
+  (println "JOPA")
+  (println (:params params))
   (patient/create-patient (:params params))
   (redirect "/patients"))
 
