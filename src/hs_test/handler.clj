@@ -22,13 +22,13 @@
 (defn create [params]
   (redirect "/"))
 
-(defn update [params]
-  (redirect "/"))
+; (defn update [params]
+;   (redirect "/"))
 
 (defroutes app
   (GET "/patients" [] (index))
   (GET "/patients/:id" [id] (show id))
   (GET "/patients/:id/edit" [id] (edit id))
   (POST "/patients" [params] (create params))
-  (PATCH "/patients/:id" [params] (update params))
+  ; (PATCH "/patients/:id" [params] (update params))
   (route/not-found "<h1>Page not found</h1>"))

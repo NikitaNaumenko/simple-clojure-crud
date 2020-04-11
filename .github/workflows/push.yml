@@ -1,0 +1,23 @@
+name: On Push
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run web tests
+      run: |
+        make web-ci-run
+    - name: Login to Docker Hub
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login -u "${{ secrets.GITHUB_NICKNAME }}" --password-stdin docker.pkg.github.com
+    - name: Build
+      run: make web-docker-build-production
+    - name: Push
+      run: make web-docker-push

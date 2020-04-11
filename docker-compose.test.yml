@@ -9,19 +9,11 @@ services:
       - POSTGRES_USER=docker
       - POSTGRES_DB=hs-dev
       - POSTGRES_PASSWORD=docker
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    ports:
-      - '5432:5432'
-  app:
+  test:
     build:
       context: .
       dockerfile: Dockerfile
-    command: lein ring server-headless
-    volumes:
-      - './:/app'
-    ports:
-      - '3000:3000'
+    command: lein test
     depends_on:
       - db
 
