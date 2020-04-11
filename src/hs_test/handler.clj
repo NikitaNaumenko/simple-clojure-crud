@@ -32,8 +32,8 @@
 
 (defroutes c-routes
   (GET "/patients" [] (index))
-  (GET "/patients/:id" [id] (show id))
   (GET "/patients/new" [] (new-p))
+  (GET "/patients/:id" [id] (show id))
   (POST "/patients" params (create params))
   (GET "/patients/:id/edit" [id] (edit id))
   (PATCH "/patients/:id" params (update-p params))
