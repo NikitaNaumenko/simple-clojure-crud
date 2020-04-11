@@ -24,14 +24,3 @@
                 }}
   :profiles
   {:test {:prep-test [[ "migratus" "migrate"]]}})
-
-; :migratus {:store :database
-;            :migration-dir "migrations"
-;            :db {:classname "org.postgresql.Driver"
-;                 :subprotocol "postgres"
-;                 :subname "//localhost/migratus"
-;                 :user "docker"
-;                 :password "docker"}}
-
-; (or (System/getenv "DATABASE_URL") "postgresql://db:5432/hs-dev")
-           ; :db (or (System/getenv "DATABASE_URL") "postgresql://db:5432/hs-dev?user=docker&password=docker")}
