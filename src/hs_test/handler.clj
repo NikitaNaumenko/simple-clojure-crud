@@ -23,20 +23,20 @@
   (views/new-p))
 
 (defn create [params]
-  (println (:params params))
   (patient/create-patient (:params params))
-  (redirect "/"))
+  (redirect "/patients"))
 
-; (defn update [params]
-;   (redirect "/"))
+(defn update-p [params]
+  (patient/update-patient (:params params))
+  (redirect "/patients"))
 
 (defroutes c-routes
   (GET "/patients" [] (index))
-  (GET "/patients/new" [] (new-p))
   (GET "/patients/:id" [id] (show id))
-  (GET "/patients/:id/edit" [id] (edit id))
+  (GET "/patients/new" [] (new-p))
   (POST "/patients" params (create params))
-  ; (PATCH "/patients/:id" [params] (update params))
+  (GET "/patients/:id/edit" [id] (edit id))
+  (PATCH "/patients/:id" params (update-p params))
   (route/not-found "<h1>Page not found</h1>"))
 
 (def app 

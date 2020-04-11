@@ -86,10 +86,10 @@
 (defn edit [patient]
   (layout "New"
           [:div
-           (hf/form-to [:post "/patients"]
+           (hf/form-to [:patch (str "/patients/" (patient :patients/id))]
                        [:div.form-group
                         (hf/label "full_name" "Full name")
-                        (hf/text-field {:class "form-control"} "full_name" (patient :patients/id))
+                        (hf/text-field {:class "form-control"} "full_name" (patient :patients/full_name))
                         ]
                        [:div.form-group
                         (hf/label "date_of_birth" "Date of Birth")
