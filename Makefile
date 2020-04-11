@@ -49,9 +49,9 @@ app-docker-build-production:
 app-docker-push:
 	docker push $(REGISTRY)/nikitanaumenko/simple-clojure-crud/app:$(VERSION)
 
-# caddy-docker-build-production:
-# 	docker build --file services/caddy/Dockerfile.production --tag $(REGISTRY)/sql-masters/sql-masters/services-caddy:$(VERSION) services/web-caddy
+caddy-docker-build-production:
+	docker build --file services/caddy/Dockerfile.production --tag $(REGISTRY)/nikitanaumenko/simple-clojure-crud/caddy:$(VERSION) services/caddy
 
-# caddy-docker-push:
-# 	docker push docker.pkg.github.com/sql-masters/sql-masters/services-caddy:$(VERSION)
+caddy-docker-push:
+	docker push docker.pkg.github.com/nikitanaumenko/simple-clojure-crud/caddy:$(VERSION)
 

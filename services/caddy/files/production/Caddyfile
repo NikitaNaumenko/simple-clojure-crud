@@ -1,0 +1,9 @@
+clojure-crud.com {
+    gzip
+    tls off
+    proxy / app:3000 {
+        transparent
+        websocket
+        header_upstream X-Forwarded-Host {host}
+    }
+}
