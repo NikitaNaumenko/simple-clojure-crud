@@ -14,7 +14,7 @@ test:
 	lein test
 
 test-ci:
-	docker-compose --file ./docker-compose.test.yml run test
+	docker-compose --file ./services/app/docker-compose.test.yml run test
 
 compose-build:
 	docker-compose build
