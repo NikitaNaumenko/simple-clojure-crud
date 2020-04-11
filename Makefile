@@ -1,3 +1,6 @@
+VERSION := latest
+REGISTRY := docker.pkg.github.com
+
 prepare-db:
 	dropdb hs-dev --if-exists
 	createdb hs-dev
