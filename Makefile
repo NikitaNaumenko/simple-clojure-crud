@@ -47,7 +47,7 @@ app-docker-build-production:
 	docker build --cache-from=$(REGISTRY)/simple-clojure-crud/app --tag $(REGISTRY)/simple-clojure-crud/app:$(VERSION) services/app
 
 app-docker-push:
-	docker push $(REGISTRY)/simple-clojure-crud/app:$(VERSION)
+	docker push $(REGISTRY)/NikitaNaumenko/simple-clojure-crud/app:$(VERSION)
 
 # caddy-docker-build-production:
 # 	docker build --file services/caddy/Dockerfile.production --tag $(REGISTRY)/sql-masters/sql-masters/services-caddy:$(VERSION) services/web-caddy
