@@ -1,43 +1,22 @@
 VERSION := latest
 REGISTRY := docker.pkg.github.com
 
-prepare-db:
-	dropdb hs-dev --if-exists
-	createdb hs-dev
-	dropdb hs-test --if-exists
-	createdb hs-test
-
-setup: prepare-db
-	lein deps
-	lein migratus migrate
-
-test:
-	dropdb hs-test --if-exists
-	createdb hs-test
-	lein test
+run-db:
+	docker run --rm --name pg-docker -d \
+		-e POSTGRES_PASSWORD=docker \
+		-e POSTGRES_USER=docker \
+		-e POSTGRES_DB=hs-dev \
+		-p 5432:5432 \
+		-v $(HOME)/docker/volumes/postgres:/var/lib/postgresql/data postgres
 
 test-ci:
 	docker-compose --file ./services/app/docker-compose.test.yml run test
-
-compose-build:
-	docker-compose build
-
-compose:
-	docker-compose up
-
-compose-down:
-	docker-compose down -v || true
-
-compose-migrate:
-	docker-compose run app lein migratus migrate
-
-compose-setup: compose-down compose-build compose-migrate
 
 project-files-touch:
 	mkdir -p tmp
 	if [ ! -f tmp/ansible-vault-password ]; then echo 'jopa' > tmp/ansible-vault-password; fi;
 
-project-env-generate:
+project-env-generate: project-files-touch
 	docker run --rm -e RUNNER_PLAYBOOK=ansible/development.yml \
 		-v $(CURDIR)/ansible/development:/runner/inventory \
 		-v $(CURDIR):/runner/project \

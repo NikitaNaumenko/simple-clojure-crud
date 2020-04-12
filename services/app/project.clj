@@ -12,6 +12,7 @@
                  [hiccup "1.0.5"]
                  [ring/ring-mock "0.4.0"]
                  [ring/ring-jetty-adapter "1.8.0"]]
+  :main hs-test.handler
   :plugins [[migratus-lein "0.5.0"]
             [lein-ring "0.12.5"]]
   :ring {:handler hs-test.handler/app}

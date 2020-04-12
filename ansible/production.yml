@@ -7,12 +7,3 @@
         src: environment.j2
         dest: '/runner/project/.env.prod'
       tags: env
-
-db_classname: "org.postgresql.Driver"
-db_subprotocol: "postgres"
-db_subname: "//db-postgresql-fra1-24734-do-user-4986171-0.a.db.ondigitalocean.com:25060/defaultdb?sslmode=require"
-db_username: "doadmin"
-db_password: "rrzhdm8rmz8rk0mi"
-db_name: "defaultdb"
-db_hostname: "db-postgresql-fra1-24734-do-user-4986171-0.a.db.ondigitalocean.com"
-db_port: "25060"

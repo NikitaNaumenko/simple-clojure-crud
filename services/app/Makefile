@@ -14,6 +14,6 @@ test:
 	lein test
 
 start:
-	env $(cat .env.test | xargs) lein ring server-headless
+	env $(cat .env.test | xargs) lein run
 
 

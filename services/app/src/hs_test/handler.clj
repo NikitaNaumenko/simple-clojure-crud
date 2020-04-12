@@ -4,6 +4,7 @@
             [hs-test.models.patient :as patient]
             [hs-test.views :as views]
             [hs-test.utils :as utils]
+            [ring.adapter.jetty :as jetty]
             [ring.middleware.params :refer [wrap-params]]
             [ring.util.response :refer :all]))
 
@@ -43,3 +44,6 @@
 (def app 
   (-> c-routes
       (wrap-params)))
+
+(defn -main []
+  (jetty/run-jetty app {:port 3000}))
