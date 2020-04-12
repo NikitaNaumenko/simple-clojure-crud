@@ -19,3 +19,6 @@ test:
 start:
 	lein run
 
+repl:
+	lein repl
+

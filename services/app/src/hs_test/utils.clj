@@ -4,6 +4,7 @@
   (Integer. (re-find #"[0-9]*" string)))
 
 (defn parse-date [date]
-  (.parse
+  (if (not (clojure.string/blank? date))
+    (.parse
         (java.text.SimpleDateFormat. "yyyy-MM-dd")
-        date))
+        date)))
