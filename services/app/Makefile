@@ -1,3 +1,6 @@
+include ../../.env
+export $(shell sed 's/=.*//' ../../.env)
+
 prepare-db:
 	dropdb hs-dev --if-exists
 	createdb hs-dev
@@ -5,8 +8,8 @@ prepare-db:
 	createdb hs-test
 
 setup:
-	env $(cat .env.test | xargs) lein deps
-	env $(cat .env.test | xargs) lein migratus migrate
+	lein deps
+	lein migratus migrate
 
 test:
 	dropdb hs-test --if-exists
@@ -14,6 +17,5 @@ test:
 	lein test
 
 start:
-	env $(cat .env.test | xargs) lein run
-
+	lein run
 

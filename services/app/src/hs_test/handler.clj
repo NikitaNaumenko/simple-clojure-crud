@@ -6,7 +6,7 @@
             [hs-test.utils :as utils]
             [ring.adapter.jetty :as jetty]
             [ring.middleware.params :refer [wrap-params]]
-            [ring.util.response :refer :all]))
+            [ring.util.response :refer [redirect]]))
 
 (defn index []
   (let [patients (patient/get-patients)]

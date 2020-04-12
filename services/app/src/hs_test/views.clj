@@ -1,6 +1,5 @@
 (ns hs-test.views
-  (:require [hiccup.core :as hc]
-            [hiccup.page :as hp]
+  (:require [hiccup.page :as hp]
             [hiccup.element :as he]
             [hiccup.form :as hf]
             [hs-test.input_helpers :as ce]))
