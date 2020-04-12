@@ -2,7 +2,8 @@
     (:require [next.jdbc.sql :as sql]
               [hs-test.utils :as utils]
               [next.jdbc :as jdbc]
-              [next.jdbc.date-time :refer :all]))
+              [next.jdbc.date-time :refer :all]
+              [hs-test.db :refer :all]))
 
 (defn create-patient [{:strs [full_name date_of_birth gender address health_insurance_number]}]
   (let [parsed_date (utils/parse-date date_of_birth)]
