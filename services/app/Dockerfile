@@ -2,4 +2,5 @@ FROM clojure
 COPY . /app
 WORKDIR /app
 RUN lein deps
-CMD ["lein" "ring" "server-headless"]
+EXPOSE 3000
+CMD ["lein", "ring", "server-headless", "3000"]
