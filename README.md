@@ -10,11 +10,11 @@
 
 ### Install
 
-`
+```
     make run-db
     make project-env-generate
     cd services/app
     make setup
     make start
-`
+```
 Open in browser localhost:3000
