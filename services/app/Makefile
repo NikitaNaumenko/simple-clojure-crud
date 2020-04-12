@@ -19,6 +19,9 @@ test:
 start:
 	lein run
 
+run:
+	lein figwheel
+
 repl:
 	lein repl
 

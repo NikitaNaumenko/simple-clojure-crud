@@ -1,0 +1,83 @@
+FATAL: no PostgreSQL user name specified in startup packet
+org.postgresql.util.PSQLException: FATAL: no PostgreSQL user name specified in startup packet
+ at org.postgresql.core.v3.ConnectionFactoryImpl.doAuthentication (ConnectionFactoryImpl.java:525)
+    org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect (ConnectionFactoryImpl.java:146)
+    org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl (ConnectionFactoryImpl.java:197)
+    org.postgresql.core.ConnectionFactory.openConnection (ConnectionFactory.java:49)
+    org.postgresql.jdbc.PgConnection.<init> (PgConnection.java:211)
+    org.postgresql.Driver.makeConnection (Driver.java:459)
+    org.postgresql.Driver.connect (Driver.java:261)
+    java.sql.DriverManager.getConnection (DriverManager.java:677)
+    java.sql.DriverManager.getConnection (DriverManager.java:189)
+    next.jdbc.connection$get_driver_connection.invokeStatic (connection.clj:136)
+    next.jdbc.connection$get_driver_connection.invoke (connection.clj:132)
+    next.jdbc.connection$url_PLUS_etc$reify__23483.getConnection (connection.clj:243)
+    next.jdbc.connection$make_connection.invokeStatic (connection.clj:263)
+    next.jdbc.connection$make_connection.invoke (connection.clj:251)
+    next.jdbc.connection$eval23500$fn__23501.invoke (connection.clj:286)
+    next.jdbc.protocols$eval23281$fn__23282$G__23272__23289.invoke (protocols.clj:24)
+    next.jdbc.result_set$eval23991$fn__23999.invoke (result_set.clj:621)
+    next.jdbc.protocols$eval23313$fn__23344$G__23304__23353.invoke (protocols.clj:33)
+    next.jdbc$execute_BANG_.invokeStatic (jdbc.clj:223)
+    next.jdbc$execute_BANG_.invoke (jdbc.clj:210)
+    next.jdbc.sql$query.invokeStatic (sql.clj:73)
+    next.jdbc.sql$query.invoke (sql.clj:65)
+    next.jdbc.sql$query.invokeStatic (sql.clj:71)
+    next.jdbc.sql$query.invoke (sql.clj:65)
+    hs_test.models.patient$get_patients.invokeStatic (patient.clj:17)
+    hs_test.models.patient$get_patients.invoke (patient.clj:16)
+    hs_test.handler$index.invokeStatic (handler.clj:12)
+    hs_test.handler$index.invoke (handler.clj:11)
+    hs_test.handler$fn__25332.invokeStatic (handler.clj:35)
+    hs_test.handler/fn (handler.clj:35)
+    compojure.core$wrap_response$fn__22485.invoke (core.clj:158)
+    compojure.core$wrap_route_middleware$fn__22469.invoke (core.clj:128)
+    compojure.core$wrap_route_info$fn__22474.invoke (core.clj:137)
+    compojure.core$wrap_route_matches$fn__22478.invoke (core.clj:146)
+    compojure.core$routing$fn__22493.invoke (core.clj:185)
+    clojure.core$some.invokeStatic (core.clj:2701)
+    clojure.core$some.invoke (core.clj:2692)
+    compojure.core$routing.invokeStatic (core.clj:185)
+    compojure.core$routing.doInvoke (core.clj:182)
+    clojure.lang.RestFn.applyTo (RestFn.java:139)
+    clojure.core$apply.invokeStatic (core.clj:667)
+    clojure.core$apply.invoke (core.clj:660)
+    compojure.core$routes$fn__22497.invoke (core.clj:192)
+    ring.middleware.params$wrap_params$fn__25319.invoke (params.clj:67)
+    clojure.lang.Var.invoke (Var.java:384)
+    figwheel_sidecar.components.figwheel_server$possible_endpoint$fn__18929.invoke (figwheel_server.clj:225)
+    figwheel_sidecar.components.figwheel_server$handle_static_resources$fn__18909.invoke (figwheel_server.clj:198)
+    figwheel_sidecar.components.figwheel_server$handle_index$fn__18900.invoke (figwheel_server.clj:183)
+    figwheel_sidecar.components.figwheel_server$handle_figwheel_websocket$fn__18923.invoke (figwheel_server.clj:220)
+    figwheel_sidecar.components.figwheel_server$wrap_no_cache$fn__18934.invoke (figwheel_server.clj:240)
+    co.deps.ring_etag_middleware$wrap_file_etag$fn__18093.invoke (ring_etag_middleware.clj:94)
+    ring.middleware.not_modified$wrap_not_modified$fn__18069.invoke (not_modified.clj:61)
+    ring.middleware.cors$handle_cors.invokeStatic (cors.clj:171)
+    ring.middleware.cors$handle_cors.invoke (cors.clj:160)
+    ring.middleware.cors$wrap_cors$fn__18038.invoke (cors.clj:185)
+    figwheel_sidecar.components.figwheel_server$log_output_to_figwheel_server_log$fn__18891.invoke (figwheel_server.clj:144)
+    org.httpkit.server.HttpHandler.run (RingHandler.java:115)
+    java.util.concurrent.Executors$RunnableAdapter.call (Executors.java:515)
+    java.util.concurrent.FutureTask.run (FutureTask.java:264)
+    java.util.concurrent.ThreadPoolExecutor.runWorker (ThreadPoolExecutor.java:1130)
+    java.util.concurrent.ThreadPoolExecutor$Worker.run (ThreadPoolExecutor.java:630)
+    java.lang.Thread.run (Thread.java:832)
+
+Compiling build :dev to "resources/public/js/main.js" from ["src/cljs"]...
+[32mSuccessfully compiled build :dev to "resources/public/js/main.js" in 0.483 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/hs_test/handler.js
+Compiling build :dev to "resources/public/js/main.js" from ["src/cljs"]...
+[32mSuccessfully compiled build :dev to "resources/public/js/main.js" in 0.408 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/hs_test/handler.js
+Compiling build :dev to "resources/public/js/main.js" from ["src/cljs"]...
+[32mSuccessfully compiled build :dev to "resources/public/js/main.js" in 0.647 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/hs_test/handler.js
+Compiling build :dev to "resources/public/js/main.js" from ["src/cljs"]...
+[32mSuccessfully compiled build :dev to "resources/public/js/main.js" in 0.451 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/hs_test/handler.js

@@ -8,6 +8,7 @@
   (hp/html5 [:head
       [:title title]
       (hp/include-css "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css")]
+      (hp/include-js "/js/main.js")
     [:body
      [:main.container content]]))
 
