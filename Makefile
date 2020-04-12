@@ -55,3 +55,12 @@ caddy-docker-build-production:
 caddy-docker-push:
 	docker push docker.pkg.github.com/nikitanaumenko/simple-clojure-crud/caddy:$(VERSION)
 
+ansible-vaults-edit:
+	docker run -it --rm \
+		-v $(CURDIR):/runner/project \
+		ansible/ansible-runner ansible-vault edit project/ansible/production/group_vars/all/vault.yml
+
+ansible-vaults-create:
+	docker run -it --rm \
+		-v $(CURDIR):/runner/project \
+		ansible/ansible-runner ansible-vault create project/ansible/production/group_vars/all/vault.yml
