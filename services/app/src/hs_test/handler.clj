@@ -23,8 +23,6 @@
   (views/new-p))
 
 (defn create [params]
-  (println "JOPA")
-  (println (:params params))
   (patient/create-patient (:params params))
   (redirect "/patients"))
 
@@ -33,6 +31,7 @@
   (redirect "/patients"))
 
 (defroutes c-routes
+  (GET "/" [] (index))
   (GET "/patients" [] (index))
   (GET "/patients/new" [] (new-p))
   (GET "/patients/:id" [id] (show id))
@@ -44,4 +43,3 @@
 (def app 
   (-> c-routes
       (wrap-params)))
-
