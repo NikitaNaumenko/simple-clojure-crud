@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clojure-dep
+  labels:
+    app: simple-clojure-crud
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simple-clojure-crud
+  template:
+    metadata:
+      labels:
+        app: simple-clojure-crud
+    spec:
+      containers:
+      - name: app
+        image: docker.pkg.github.com/nikitanaumenko/simple-clojure-crud/app:latest
+        ports:
+        - containerPort: 3000
+      - name: caddy
+        image: docker.pkg.github.com/nikitanaumenko/simple-clojure-crud/caddy:latest
+        ports:
+        - containerPort: 443
+      imagePullSecrets:
+        - name: regsecret
