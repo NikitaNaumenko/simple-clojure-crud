@@ -15,3 +15,4 @@ pom.xml.asc
 .lsp/
 /tmp
 /services/app/resources/public/
+/services/app/figwheel_server.log

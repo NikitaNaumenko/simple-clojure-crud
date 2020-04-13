@@ -8,9 +8,11 @@
   (hp/html5 [:head
       [:title title]
       (hp/include-css "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css")]
-      (hp/include-js "/js/main.js")
+
     [:body
-     [:main.container content]]))
+     [:main.container content]
+      (hp/include-js "https://code.jquery.com/jquery-3.4.1.js")
+      (hp/include-js "/js/main.js") ]))
 
 (defn index [patients]
   (layout "Index"
@@ -30,6 +32,7 @@
               [:th "Address"]
               [:th "Health Insurance number"]
               [:th ""]
+              [:th ""]
               ]]
            [:tbody
             (for [patient patients]
@@ -41,17 +44,15 @@
                [:td (patient :patients/address)]
                [:td (patient :patients/health_insurance_number)]
                [:td (he/link-to {:class "btn btn-secondary"} (str "/patients/" (patient :patients/id) "/edit") "Edit")]
+               [:td (he/link-to {:class "btn btn-danger destroy-btn"
+                                 :data-link (str "/patients/" (patient :patients/id) "/destroy")
+                                 } "#" "Delete")]
                ])]]]))
 
 (defn show [patient]
   (layout "Show"
           [:div
            (patient :patients/id)]))
-
-; (defn edit [patient]
-;   (layout "Edit"
-;           [:div
-;            (patient :patients/id)]))
 
 (defn new-p []
   (layout "New"

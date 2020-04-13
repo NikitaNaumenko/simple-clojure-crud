@@ -8,7 +8,7 @@
                  [org.postgresql/postgresql "42.2.12.jre7"]
                  [migratus "1.2.7"]
                  [org.clojure/clojurescript "1.10.597"]
-                 
+                 [jayq "2.5.4"]
                  [ring/ring-core "1.8.0"]
                  [compojure "1.6.1"]
                  [hiccup "1.0.5"]
@@ -19,7 +19,6 @@
                                    :optimizations :none
                                    :output-to "resources/public/js/main.js"
                                    :output-dir "resources/public/js/out"}
-                      :figwheel {:websocket-host "myproject.local"}
                       :id "dev"
                       :source-paths ["src/cljs"]}]}
   :figwheel { :hawk-options {:watcher :polling}
