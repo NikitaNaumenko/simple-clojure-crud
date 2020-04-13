@@ -1,5 +1,5 @@
 # Simple clojure CRUD
-![My code](https://prntscr.com/ry8a2c)
+![My code](https://i.imgur.com/HmLYQg1.jpeg)
 
 ### Requirements
 
