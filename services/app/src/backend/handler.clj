@@ -12,23 +12,18 @@
 
 (defn index []
   (let [patients (db/get-patients)]
-    patients))
+    {:patients patients}))
 
 (compojure/defroutes routes
-  (compojure/GET "/" [] (response (views/layout))))
+  (compojure/GET "/" [] (views/layout))
+  (compojure/GET "/patients" [] (response (index))))
 
 (def app 
   (-> #'routes
       (wrap-resource "public")
       (wrap-json-response)))
 
-; (comment
-;   (.stop app-main)
-;   (def app-main
-;     (jetty/run-jetty app {:port 3000
-;                           :join? false}))
-;   (.stop app-main))
-(defonce server (jetty/run-jetty #'app {:port 3000  :join? false}))
+(defonce server (jetty/run-jetty app {:port 3000  :join? false}))
 (comment
   (.start server)
   (.stop server))
