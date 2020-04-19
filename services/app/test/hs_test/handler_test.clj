@@ -5,7 +5,6 @@
              [ring.mock.request :as mock]
              [hs-test.helpers :refer :all]))
 
-
 (use-fixtures :each
               (fn [f]
                 (create-patient)

@@ -4,7 +4,7 @@
 (def insurance-number "12345")
 
 (defn create-patient []
-  (if (empty? (db/find-by {:health_insurance_number insurance-number}))
+  (when (empty? (db/find-by {:health_insurance_number insurance-number}))
     (db/create-patient {"full_name" "Foo"
                         "date_of_birth" "2020-02-02"
                         "address" "Bar"

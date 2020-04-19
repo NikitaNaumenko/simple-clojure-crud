@@ -14,5 +14,6 @@ pom.xml.asc
 .DS_Store
 .lsp/
 /tmp
-/services/app/resources/public/
-/services/app/figwheel_server.log
+/services/app/resources/public/js/
+/services/app/node_modules/
+/services/app/.shadow-cljs/

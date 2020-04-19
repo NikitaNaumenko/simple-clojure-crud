@@ -1,9 +1,9 @@
-(ns hs-test.models.patient
-    (:require [next.jdbc.sql :as sql]
-              [hs-test.utils :as utils]
-              [next.jdbc :as jdbc]
-              [next.jdbc.date-time :refer :all]
-              [hs-test.db :refer :all]))
+(ns backend.models.patient
+  (:require [backend.db :refer [ds]]
+            [backend.utils :as utils]
+            [next.jdbc :as jdbc]
+            [next.jdbc.sql :as sql]
+            [next.jdbc.result-set :as rs]))
 
 (defn create-patient [{:strs [full_name date_of_birth gender address health_insurance_number]}]
   (let [parsed_date (utils/parse-date date_of_birth)]
@@ -11,10 +11,10 @@
                              :date_of_birth parsed_date
                              :gender gender
                              :address address
-                             :health_insurance_number health_insurance_number})))
+                             :health_insurance_number health_insurance_number} )))
 
 (defn get-patients []
-  (sql/query ds ["SELECT * FROM patients"]))
+  (sql/query ds ["SELECT * FROM patients"] {:builder-fn rs/as-unqualified-lower-maps}))
 
 (defn get-patient [id]
   (sql/get-by-id ds :patients id))
