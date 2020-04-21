@@ -1,5 +1,7 @@
 (ns frontend.routes
   (:require [secretary.core :as secretary :refer-macros [defroute]]
-            [re-frame.core :as rf :refer [dispatch dispatch-sync]]))
+            [re-frame.core :as rf :refer [dispatch]]))
 
-(defroute "/patients" [] (dispatch [:get-patients]))
+
+(defroute "/" [] (dispatch [:set-active-page {:page :home}]))
+(defroute "/patients" [] (dispatch [:set-active-page {:page :patients}]))

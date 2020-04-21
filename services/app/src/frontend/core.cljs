@@ -5,23 +5,21 @@
             [re-frame.core :as rf]
             [frontend.events]
             [frontend.routes]
+            [frontend.views :as views]
+            [frontend.subs :as subs]
             [accountant.core :as accountant]
-            [secretary.core :as secretary]
-            [frontend.components.root :refer [root]]))
-
-;; initialise re-frame by broadcasting event
-(rf/dispatch-sync [:initialize])
+            [secretary.core :as secretary]))
 
 (defn render []
-  (rdom/render [root] (dom/by-id "app")))
-
+  (rdom/render [views/root] (dom/by-id "app")))
 
 (defn reload! []
-  (println "(sopa!)")
+  (rf/clear-subscription-cache!)
   (render))
 
 
 (defn main! []
+  (rf/dispatch-sync [:initialize-db])
   (accountant/configure-navigation!
     {:nav-handler
       (fn [path]
