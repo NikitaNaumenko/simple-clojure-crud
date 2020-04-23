@@ -14,9 +14,18 @@
   (let [patients (db/get-patients)]
     {:patients patients}))
 
+(defn create [params]
+  (println "JOPAJOPA")
+  (db/create-patient (:params params)))
+
 (compojure/defroutes routes
   (compojure/GET "/" [] (views/layout))
-  (compojure/GET "/patients" [] (response (index))))
+  (compojure/GET "/patients" [] (response (index)))
+  ; (compojure/GET "/patients/:id" [id] (show id))
+  (compojure/POST "/patients" params (create params))
+  ; (compojure/GET "/patients/:id/edit" [id] (edit id))
+  ; (compojure/PATCH "/patients/:id" params (update-p params)))
+  )
 
 (def app 
   (-> #'routes

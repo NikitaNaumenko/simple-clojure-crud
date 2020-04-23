@@ -4,11 +4,13 @@
             [reagent.dom :as rdom]
             [re-frame.core :as rf]
             [frontend.events]
-            [frontend.routes]
+            [goog.events :as events]
             [frontend.views :as views]
+            [secretary.core :as secretary :refer-macros [defroute]]
             [frontend.subs :as subs]
-            [accountant.core :as accountant]
-            [secretary.core :as secretary]))
+            [accountant.core :as accountant])
+  (:import [goog History]
+           [goog.history EventType]))
 
 (defn render []
   (rdom/render [views/root] (dom/by-id "app")))
@@ -16,17 +18,23 @@
 (defn reload! []
   (rf/clear-subscription-cache!)
   (render))
+(defn routes
+  []
+  (set! (.-hash js/location) "/")      ;; on app startup set location to "/"
+  (secretary/set-config! :prefix "#")  ;; and don't forget about "#" prefix
+  (defroute "/" [] (rf/dispatch [:set-active-page {:page :home}]))
+  (defroute "/patients" [] (rf/dispatch [:set-active-page {:page :patients}]))
+  (defroute "/patients/new" [] (rf/dispatch [:set-active-page {:page :new-patients}])))
 
+(def history
+  (doto (History.)
+    (events/listen EventType.NAVIGATE
+                   (fn [event] (secretary/dispatch! (.-token event))))
+    (.setEnabled true)))
 
 (defn main! []
   (rf/dispatch-sync [:initialize-db])
-  (accountant/configure-navigation!
-    {:nav-handler
-      (fn [path]
-        (secretary/dispatch! path))
-      :path-exists?
-      (fn [path]
-        (secretary/locate-route path))})
+  (routes)
   (reload!))
 
 (main!)

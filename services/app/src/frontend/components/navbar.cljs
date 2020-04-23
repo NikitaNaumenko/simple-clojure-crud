@@ -1,10 +1,9 @@
 (ns frontend.components.navbar
-  (:require ["react-bootstrap" :as rb]
-            [accountant.core :as accountant]))
+  (:require ["react-bootstrap" :as rb]))
 
 (defn Navbar []
   [:> rb/Navbar {:bg "dark" :variant "dark"}
     [:> rb/Nav {:class "mr-auto"}
-      [:> rb/Nav.Link {:on-click #(accountant/navigate! "/") } "Home"]
-      [:> rb/Nav.Link {:on-click #(accountant/navigate! "/patients") } "Patients"]
-      [:> rb/Nav.Link {:href "#new-patient" } "New Patient"]]])
+      [:> rb/Nav.Link {:href "#/" } "Home"]
+      [:> rb/Nav.Link {:href "#/patients"} "Patients"]
+      [:> rb/Nav.Link {:href "#/patients/new"} "New Patient"]]])

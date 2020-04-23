@@ -15,6 +15,7 @@
 
 (defn get-patients []
   (sql/query ds ["SELECT * FROM patients"] {:builder-fn rs/as-unqualified-lower-maps}))
+(clojure.core/count (get-patients))
 
 (defn get-patient [id]
   (sql/get-by-id ds :patients id))
