@@ -8,6 +8,3 @@
     (.parse
         (java.text.SimpleDateFormat. "yyyy-MM-dd")
         date)))
-
-(parse-date "1993-12-11")
-(java.util.Date. "2019-02-01T00:00:00" )
