@@ -1,5 +1,6 @@
 (ns backend.handler
-  (:require [backend.models.patient :as db]
+  (:require 
+    [backend.models.patient :as db]
             [backend.views :as views]
             [compojure.core :as compojure]
             [compojure.route :as route]
@@ -7,7 +8,8 @@
             [ring.middleware.resource :refer [wrap-resource]]
             [ring.middleware.content-type :refer [wrap-content-type]]
             [ring.middleware.not-modified :refer [wrap-not-modified]]
-            [ring.middleware.json :refer [wrap-json-response]]
+            [ring.middleware.json :refer [wrap-json-response wrap-json-params]]
+            [ring.middleware.params :refer [wrap-params]]
             [ring.util.response :refer [response]]))
 
 (defn index []
@@ -15,8 +17,8 @@
     {:patients patients}))
 
 (defn create [params]
-  (println "JOPAJOPA")
-  (db/create-patient (:params params)))
+  (let [patient-params (get-in params [:params "patient"])]
+    (db/create-patient patient-params)))
 
 (compojure/defroutes routes
   (compojure/GET "/" [] (views/layout))
@@ -30,11 +32,10 @@
 (def app 
   (-> #'routes
       (wrap-resource "public")
+      (wrap-json-params)
       (wrap-json-response)))
 
 (defonce server (jetty/run-jetty app {:port 3000  :join? false}))
 (comment
   (.start server)
   (.stop server))
-
-

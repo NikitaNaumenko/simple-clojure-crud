@@ -48,12 +48,13 @@
 
 (reg-event-fx
   :create-patient
-  (fn [db [_ patient]]
-    (println patient)
+  (fn [db [_ params]]
+    (println params)
     {:http-xhrio {:method :post
                   :uri "/patients"
                   :format (ajax/json-request-format)
                   :response-format (ajax/json-response-format {:keywords? true})
+                  :params {:patient params}
                   :on-success [:register-user-success]
                   :on-failure [:failure]}}))
 
