@@ -24,8 +24,10 @@
   (secretary/set-config! :prefix "#")  ;; and don't forget about "#" prefix
   (defroute "/" [] (rf/dispatch [:set-active-page {:page :home}]))
   (defroute "/patients" [] (rf/dispatch [:set-active-page {:page :patients}]))
-  (defroute "/patients/new" [] (rf/dispatch [:set-active-page {:page :new-patients}])))
-
+  (defroute "/patients/:id" [id] (rf/dispatch [:set-active-page {:page :show-patient :id id}]))
+  (defroute "/patients/:id/edit" [id] (rf/dispatch [:set-active-page {:page :edit-patient :id id}]))
+  (defroute "/patients/new" [] (rf/dispatch [:set-active-page {:page :new-patient}])))
+; 
 (def history
   (doto (History.)
     (events/listen EventType.NAVIGATE

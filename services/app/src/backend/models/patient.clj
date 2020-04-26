@@ -14,11 +14,17 @@
                                :address address
                                :health_insurance_number health_insurance_number})))
 
-(defn get-patients []
-  (sql/query ds ["SELECT * FROM patients"] {:builder-fn rs/as-unqualified-lower-maps}))
+(defn get-patients
+  ([] (sql/query ds ["SELECT * FROM patients"] {:builder-fn rs/as-unqualified-lower-maps}))
+  ([params]
+    (let [value (str "%" (params "query") "%")]
+     (println value)
+      (sql/query ds
+                 ["SELECT * FROM patients WHERE full_name ILIKE ? OR CAST(id AS TEXT) ILIKE ?" value value]
+                 {:builder-fn rs/as-unqualified-lower-maps}))))
 
 (defn get-patient [id]
-  (sql/get-by-id ds :patients id))
+  (sql/get-by-id ds :patients id {:builder-fn rs/as-unqualified-lower-maps}))
 
 (defn find-by [params]
   (sql/find-by-keys ds :patients params))
@@ -32,6 +38,9 @@
                                  :address address
                                  :health_insurance_number health_insurance_number}
                    {:id patient_id}))))
+
+(defn destroy-patient [id]
+  (sql/delete! ds :patients {:id id}))
 
 (defn delete-patients []
   (jdbc/execute! ds ["DELETE FROM patients"]))
