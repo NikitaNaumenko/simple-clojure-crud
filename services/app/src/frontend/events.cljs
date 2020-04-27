@@ -67,7 +67,6 @@
 (reg-event-fx
   :edit-patient
   (fn [db [_ {:keys [id]}]]
-    (println "2")
     {:http-xhrio {:method :get
                   :uri (str "/patients/" id "/edit")
                   :format (ajax/json-request-format)
@@ -79,3 +78,17 @@
   (fn [db [_ {patient :patient}]]
     (println patient)
     (assoc db :edited-patient patient)))
+
+(reg-event-fx
+  :delete-patient
+  (fn [db [_ id]]
+    {:http-xhrio {:method :delete
+                  :uri (str "/patients/" id)
+                  :format (ajax/json-request-format)
+                  :response-format (ajax/json-response-format {:keywords? true})
+                  :on-success [:delete-patient-success]
+                  :on-failure [::failure]}}))
+
+(reg-event-db :delete-patient-success
+  (fn [db [_ {patient :patient}]]
+    (db)))

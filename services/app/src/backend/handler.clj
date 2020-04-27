@@ -37,9 +37,8 @@
   (let [patient-params (get-in params [:params "patient"])]
     (db/update-patient patient-params)))
 
-(defn destroy-patient [params]
-  (let [patient-params (get-in params [:params "patient"])]
-    (db/destroy-patient patient-params)))
+(defn destroy-patient [id]
+  (db/destroy-patient (utils/parse-int id)))
 
 (compojure/defroutes routes
   (compojure/GET "/" [] (views/layout))
@@ -48,7 +47,7 @@
   (compojure/POST "/patients" params (create-patient params))
   (compojure/GET "/patients/:id/edit" [id] (response (edit-patient id)))
   (compojure/PATCH "/patients/:id" params (update-patient params))
-  (compojure/DELETE "patients/:id" [id] (destroy-patient id)))
+  (compojure/DELETE "/patients/:id" [id] (destroy-patient id)))
 
 (def app
   (-> #'routes

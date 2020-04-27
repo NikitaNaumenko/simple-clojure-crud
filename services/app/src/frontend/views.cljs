@@ -46,7 +46,9 @@
                 [:td (patient :address)]
                 [:td (patient :health_insurance_number)]
                 [:td [:a {:href (str "#/patients/" (patient :id) "/edit") :class "btn btn-primary"} "Edit"]
-                     [:a {:href "#" :class "btn btn-danger"} "Delete"]]])]])]]])))
+                     [:a {:href "#/patients"
+                          :on-click #(rf/dispatch [:delete-patient (patient :id)])
+                          :class "btn btn-danger"} "Delete"]]])]])]]])))
 
 (defn new-patient []
   (let  [default {:full_name ""
