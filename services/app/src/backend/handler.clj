@@ -29,9 +29,9 @@
     {:patient patient}))
 
 (defn edit-patient [id]
-  (let [patient (db/get-patient (utils/parse-int id))]
-    (println patient)
-    {:patient patient}))
+  (let [{:keys [date_of_birth] :as patient}
+        (db/get-patient (utils/parse-int id))]
+    {:patient (merge patient {:date_of_birth (utils/date-to-str date_of_birth)})}))
 
 (defn update-patient [params]
   (let [patient-params (get-in params [:params "patient"])]

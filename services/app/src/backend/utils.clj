@@ -8,3 +8,6 @@
     (.parse
         (java.text.SimpleDateFormat. "yyyy-MM-dd")
         date)))
+
+(defn date-to-str [date]
+  (.format (java.text.SimpleDateFormat. "yyyy-MM-dd") date))
