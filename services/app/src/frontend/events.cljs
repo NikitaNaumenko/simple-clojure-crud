@@ -25,12 +25,11 @@
                   :dispatch-n  (list [:get-patients])}
        :edit-patient {:db (assoc set-page :edit-patient id)
                       :dispatch [:edit-patient {:id id}]}
-       :new-patients {:db set-page}))))
+       :new-patient {:db set-page}))))
 
 (reg-event-fx
   :get-patients
   (fn [db [_ params]]
-    (println params)
     {:http-xhrio {:method :get
                   :uri "/patients"
                   :url-params params
@@ -76,8 +75,27 @@
 
 (reg-event-db :edit-patient-success
   (fn [db [_ {patient :patient}]]
-    (println patient)
-    (assoc db :edited-patient patient)))
+    (-> db
+       (assoc :edited-patient patient)
+       (assoc :loaded-patient true))
+    ))
+
+(reg-event-fx
+  :update-patient
+  (fn [db [_ params id]]
+    {:http-xhrio {:method :patch
+                  :uri (str "/patients/" id)
+                  :format (ajax/json-request-format)
+                  :response-format (ajax/json-response-format {:keywords? true})
+                  :params {:patient params}
+                  :on-success [:create-patient-success]
+                  :on-failure [:failure]}}))
+
+(reg-event-fx
+ :update-patient-success
+ (fn [{patient :db} [{props :patient}]]
+   {:db (merge patient props)
+    :set-hash {:hash "/"}}))
 
 (reg-event-fx
   :delete-patient

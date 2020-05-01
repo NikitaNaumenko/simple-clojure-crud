@@ -61,7 +61,7 @@
       (let [{:keys [full_name date_of_birth address health_insurance_number gender]} @form
         create-patient (fn [event form]
                          (.preventDefault event)
-                         (rf/dispatch [:update-patient form])) ] 
+                         (rf/dispatch [:create-patient form]))]
     [:div.container
        [:div.text-center.p-2
         [:h1 "New Patient"]]
@@ -104,57 +104,61 @@
            [:> rb/Button {:variant "primary" :type "submit"} "Submit"]]]]]))))
 
 (defn edit-patient []
-  (let [{:keys [full_name
-                 date_of_birth
-                 address
-                 health_insurance_number
-                 gender]} @(rf/subscribe [:edited-patient])
+  (let [{full_name :full_name
+         id :id
+         date_of_birth :date_of_birth
+         address :address
+         gender :gender
+         health_insurance_number :health_insurance_number } @(rf/subscribe [:edited-patient])
          default {:full_name full_name
                   :date_of_birth date_of_birth
                   :address address
                   :gender gender
                   :health_insurance_number health_insurance_number}
-         form (reagent/atom default)]
-[:div.container
-           [:div.text-center.p-2
-            [:h1 "Edit Patient"]]
-           [:div.row.justify-content-center
-            [:div.col-8
-             [:> rb/Form 
-               [:> rb/Form.Group {:controlId "formGroupFullName"}
-                [:> rb/Form.Label "Full Name"]
-                [:> rb/Form.Control {:type "text"
-                                     :placeholder "Enter Full Name"
-                                     :default-value full_name
-                                     :on-change #(swap! form assoc :full_name (-> % .-target .-value))
-                                     }]]
-               [:> rb/Form.Group {:controlId "formGroupDateOfBirth"}
-                [:> rb/Form.Label "Date of Birth"]
-                [:> rb/Form.Control {:type "date"
-                                     :default-value date_of_birth
-                                     :on-change #(swap! form assoc :date_of_birth (-> % .-target .-value)) }]]
-               [:> rb/Form.Group {:controlId "formGroupFullName"}
-                [:> rb/Form.Control {:as "select"
-                                     :custom "custom"
-                                     :default-value gender
-                                     :on-change #(swap! form assoc :gender (-> % .-target .-value))
-                                     }
-                 [:option "male"]
-                 [:option "female"]
-                 ]]
-               [:> rb/Form.Group {:controlId "formGroupAddress"}
-                [:> rb/Form.Label "Address"]
-                [:> rb/Form.Control {:type "text" 
-                                     :default-value address
-                                     :on-change #(swap! form assoc :address (-> % .-target .-value))
-                                     }]]
-               [:> rb/Form.Group {:controlId "formGroupHealthInsuranceNumber"}
-                [:> rb/Form.Label "Health Insurance Number"]
-                [:> rb/Form.Control {:type "text"
-                                     :default-value health_insurance_number
-                                     :on-change #(swap! form assoc :health_insurance_number (-> % .-target .-value))
-                                     }]]
-               [:> rb/Button {:variant "primary" :type "submit"} "Submit"]]]]]))
+        
+         form (reagent/atom default)
+         ]
+    (let [loaded @(rf/subscribe [:loaded-patient])
+          update-patient (fn [event form]
+                            (.preventDefault event)
+                            (rf/dispatch [:update-patient form id])) ]
+          (when loaded
+            (fn []
+              [:div.container
+                [:div.text-center.p-2
+                  [:h1 "Edit Patient"]]
+                [:div.row.justify-content-center
+                  [:div.col-8
+                    [:> rb/Form  {:on-submit #(update-patient % @form)}
+                      [:> rb/Form.Group {:controlId "formGroupFullName"}
+                        [:> rb/Form.Label "Full Name"]
+                        [:> rb/Form.Control {:type "text"
+                                             :placeholder "Enter Full Name"
+                                             :default-value full_name
+                                             :on-change #(swap! form assoc :full_name (-> % .-target .-value))}]]
+                        [:> rb/Form.Group {:controlId "formGroupDateOfBirth"}
+                          [:> rb/Form.Label "Date of Birth"]
+                          [:> rb/Form.Control {:type "date"
+                                               :default-value date_of_birth
+                                               :on-change #(swap! form assoc :date_of_birth (-> % .-target .-value))}]]
+                        [:> rb/Form.Group {:controlId "formGroupGender"}
+                          [:> rb/Form.Control {:as "select"
+                                               :custom "custom"
+                                               :default-value gender
+                                               :on-change #(swap! form assoc :gender (-> % .-target .-value))}
+                            [:option "male"]
+                            [:option "female"]]]
+                        [:> rb/Form.Group {:controlId "formGroupAddress"}
+                          [:> rb/Form.Label "Address"]
+                          [:> rb/Form.Control {:type "text" 
+                                               :default-value address
+                                               :on-change #(swap! form assoc :address (-> % .-target .-value))}]]
+                        [:> rb/Form.Group {:controlId "formGroupHealthInsuranceNumber"}
+                          [:> rb/Form.Label "Health Insurance Number"]
+                          [:> rb/Form.Control {:type "text"
+                                               :default-value health_insurance_number
+                                               :on-change #(swap! form assoc :health_insurance_number (-> % .-target .-value))}]]
+                        [:> rb/Button {:variant "primary" :type "submit"} "Submit"]]]]])))))
 
 (defn pages [page-name]
   (case page-name

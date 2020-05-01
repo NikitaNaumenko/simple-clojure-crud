@@ -14,7 +14,7 @@ setup:
 test:
 	dropdb hs-test --if-exists
 	createdb hs-test
-	lein test
+	clj -Atest
 
 start:
 	lein run

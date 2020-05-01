@@ -17,5 +17,10 @@
         ring/ring-core  {:mvn/version "1.8.0"}
         compojure {:mvn/version "1.6.1"}
         ring/ring-jetty-adapter {:mvn/version "1.8.0"}
-        ring/ring-json {:mvn/version "0.5.0"}
-        }}
+        ring/ring-json {:mvn/version "0.5.0"} }
+ :aliases {:test {:extra-paths ["test"]
+                  :extra-deps {com.cognitect/test-runner {:git/url "https://github.com/cognitect-labs/test-runner.git"
+                                                         :sha "209b64504cb3bd3b99ecfec7937b358a879f55c1"}
+                               ring/ring-mock {:mvn/version "0.4.0"}}
+                 :main-opts ["-m" "cognitect.test-runner"]}}
+ }

@@ -1,5 +1,5 @@
-(ns hs-test.helpers
-  (:require [hs-test.models.patient :as db]))
+(ns backend.helpers
+  (:require [backend.models.patient :as db]))
 
 (def insurance-number "12345")
 

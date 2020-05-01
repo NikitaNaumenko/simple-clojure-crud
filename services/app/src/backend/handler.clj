@@ -33,9 +33,8 @@
         (db/get-patient (utils/parse-int id))]
     {:patient (merge patient {:date_of_birth (utils/date-to-str date_of_birth)})}))
 
-(defn update-patient [params]
-  (let [patient-params (get-in params [:params "patient"])]
-    (db/update-patient patient-params)))
+(defn update-patient [id params]
+  (db/update-patient id params))
 
 (defn destroy-patient [id]
   (db/destroy-patient (utils/parse-int id)))
@@ -43,11 +42,11 @@
 (compojure/defroutes routes
   (compojure/GET "/" [] (views/layout))
   (compojure/GET "/patients" params (response (index-patients (params :query-params))))
-  (compojure/GET "/patients/:id" [id] (show-patient id))
-  (compojure/POST "/patients" params (create-patient params))
+  (compojure/GET "/patients/:id" [id] (response (show-patient id)))
+  (compojure/POST "/patients" params (response (create-patient params)))
   (compojure/GET "/patients/:id/edit" [id] (response (edit-patient id)))
-  (compojure/PATCH "/patients/:id" params (update-patient params))
-  (compojure/DELETE "/patients/:id" [id] (destroy-patient id)))
+  (compojure/PATCH "/patients/:id" [id patient] (response (update-patient id patient)))
+  (compojure/DELETE "/patients/:id" [id] (response (destroy-patient id))))
 
 (def app
   (-> #'routes
