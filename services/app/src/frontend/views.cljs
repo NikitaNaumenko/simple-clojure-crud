@@ -45,7 +45,8 @@
                 [:td (patient :gender)]
                 [:td (patient :address)]
                 [:td (patient :health_insurance_number)]
-                [:td [:a {:href (str "#/patients/" (patient :id) "/edit") :class "btn btn-primary"} "Edit"]
+                [:td [:a {:href (str "#/patients/" (patient :id)) :class "btn btn-primary"} "Show"]
+                     [:a {:href (str "#/patients/" (patient :id) "/edit") :class "btn btn-primary"} "Edit"]
                      [:a {:href "#/patients"
                           :on-click #(rf/dispatch [:delete-patient (patient :id)])
                           :class "btn btn-danger"} "Delete"]]])]])]]])))
@@ -80,7 +81,7 @@
             [:> rb/Form.Control {:type "date"
                                  :value date_of_birth
                                  :on-change #(swap! form assoc :date_of_birth (-> % .-target .-value)) }]]
-           [:> rb/Form.Group {:controlId "formGroupFullName"}
+           [:> rb/Form.Group {:controlId "formGroupGender"}
             [:> rb/Form.Control {:as "select"
                                  :custom "custom"
                                  :value gender
@@ -160,12 +161,31 @@
                                                :on-change #(swap! form assoc :health_insurance_number (-> % .-target .-value))}]]
                         [:> rb/Button {:variant "primary" :type "submit"} "Submit"]]]]])))))
 
+(defn show-patient []
+  (let [{full_name :full_name
+         id :id
+         date_of_birth :date_of_birth
+         address :address
+         gender :gender
+         health_insurance_number :health_insurance_number } @(rf/subscribe [:show-patient])]
+[:div.container
+                [:div.text-center.p-2
+                  [:h1 "Show Patient"]]
+                [:div.row.justify-content-center
+                  [:div.col-8
+                    [:div full_name]
+                    [:div date_of_birth]
+                    [:div gender]
+                    [:div address]
+                    [:div health_insurance_number]]]]))
+
 (defn pages [page-name]
   (case page-name
     :home [home]
     :patients [patients]
     :new-patient [new-patient]
     :edit-patient [edit-patient]
+    :show-patient [show-patient]
     [home]))
 
 (defn root []

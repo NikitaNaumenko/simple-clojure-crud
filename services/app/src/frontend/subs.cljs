@@ -15,12 +15,15 @@
   :edited-patient
   (fn [db _]
     (when (:loaded-patient db)
-      (println "opa")
-      (println (:edited-patient db))
      (:edited-patient db) ))) 
+
 (rf/reg-sub
   :loaded-patient
   (fn [db _]
     (:loaded-patient db)))
 
 
+(rf/reg-sub
+  :show-patient
+  (fn [db _]
+    (:patient db)))

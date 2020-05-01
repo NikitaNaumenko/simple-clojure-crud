@@ -18,6 +18,7 @@
 (defn reload! []
   (rf/clear-subscription-cache!)
   (render))
+
 (defn routes
   []
   (set! (.-hash js/location) "/")      ;; on app startup set location to "/"
@@ -35,9 +36,8 @@
                    (fn [event] (secretary/dispatch! (.-token event))))
     (.setEnabled true)))
 
-(defn main! []
+(defn ^:export main
+  []
   (rf/dispatch-sync [:initialize-db])
   (routes)
   (reload!))
-
-(main!)

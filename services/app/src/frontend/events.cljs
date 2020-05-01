@@ -25,6 +25,8 @@
                   :dispatch-n  (list [:get-patients])}
        :edit-patient {:db (assoc set-page :edit-patient id)
                       :dispatch [:edit-patient {:id id}]}
+       :show-patient {:db (assoc set-page :show-patient id)
+                      :dispatch [:show-patient {:id id}]}
        :new-patient {:db set-page}))))
 
 (reg-event-fx
@@ -59,9 +61,25 @@
 
 (reg-event-fx
  :create-patient-success
- (fn [{patient :db} [{props :patient}]]
-   {:db (merge patient props)
-    :set-hash {:hash "/"}}))
+ (fn [_ _]
+   {:set-hash {:hash "/patients"}}))
+
+(reg-event-fx
+  :show-patient
+  (fn [db [_ {:keys [id]}]]
+    {:http-xhrio {:method :get
+                  :uri (str "/patients/" id)
+                  :format (ajax/json-request-format)
+                  :response-format (ajax/json-response-format {:keywords? true})
+                  :on-success [:show-patient-success]
+                  :on-failure [:failure]}}))
+
+(reg-event-db :show-patient-success
+  (fn [db [_ {patient :patient}]]
+    (-> db
+       (assoc :patient patient)
+       (assoc :loaded-patient true))))
+
 
 (reg-event-fx
   :edit-patient
@@ -71,14 +89,13 @@
                   :format (ajax/json-request-format)
                   :response-format (ajax/json-response-format {:keywords? true})
                   :on-success [:edit-patient-success]
-                  :on-failure [::failure]}}))
+                  :on-failure [:failure]}}))
 
 (reg-event-db :edit-patient-success
   (fn [db [_ {patient :patient}]]
     (-> db
        (assoc :edited-patient patient)
-       (assoc :loaded-patient true))
-    ))
+       (assoc :loaded-patient true))))
 
 (reg-event-fx
   :update-patient
@@ -94,8 +111,7 @@
 (reg-event-fx
  :update-patient-success
  (fn [{patient :db} [{props :patient}]]
-   {:db (merge patient props)
-    :set-hash {:hash "/"}}))
+   {:set-hash {:hash "/patients"}}))
 
 (reg-event-fx
   :delete-patient
@@ -105,8 +121,8 @@
                   :format (ajax/json-request-format)
                   :response-format (ajax/json-response-format {:keywords? true})
                   :on-success [:delete-patient-success]
-                  :on-failure [::failure]}}))
+                  :on-failure [:failure]}}))
 
 (reg-event-db :delete-patient-success
-  (fn [db [_ {patient :patient}]]
-    (db)))
+  (fn [db [_ _]]
+    {:set-hash {:hash "/patients"}}))
