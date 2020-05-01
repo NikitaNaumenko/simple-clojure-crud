@@ -13,7 +13,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: lein test
+    command: clj -Atest
     env_file:
       - './.env.test'
     depends_on:
