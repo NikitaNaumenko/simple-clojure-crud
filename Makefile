@@ -13,6 +13,8 @@ test-ci:
 	docker-compose --file ./services/app/docker-compose.test.yml run test
 
 build-jar:
+	cd services/app && mkdir classes
+	cd services/app && clojure -e "(compile 'backend.core)"
 	cd services/app && export $(cat ../../.env | xargs) && CLJ_ENV=production clojure -A:uberjar --main-class backend.core
 
 project-files-touch:
