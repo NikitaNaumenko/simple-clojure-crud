@@ -7,9 +7,11 @@ prepare-db:
 	dropdb hs-test --if-exists
 	createdb hs-test
 
-test-t:
+prepare-test-db:
 	dropdb test-db --if-exists
 	createdb test-db
+
+test-t: prepare-test-db
 	CLJ_ENV=test clojure -Amigratus
 	CLJ_ENV=test clojure -Atest
 

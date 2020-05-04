@@ -6,4 +6,6 @@ db_password: "docker"
 db_name: "hs-dev"
 db_hostname: "localhost"
 db_port: "5432"
+clj_env: "development"
+
 
