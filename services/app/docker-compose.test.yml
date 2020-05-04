@@ -17,6 +17,7 @@ services:
       - CLJ_ENV=test
     env_file:
       - './.env.test'
+    network_mode: host
     depends_on:
       - db
 
