@@ -12,6 +12,9 @@ run-db:
 test-ci:
 	docker-compose --file ./services/app/docker-compose.test.yml run test
 
+build-jar:
+	cd services/app && export $(cat ../../.env | xargs) && CLJ_ENV=production clj -A:uberjar --main-class backend.core
+
 project-files-touch:
 	mkdir -p tmp
 	if [ ! -f tmp/ansible-vault-password ]; then echo 'jopa' > tmp/ansible-vault-password; fi;

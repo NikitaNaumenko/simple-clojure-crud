@@ -15,6 +15,9 @@ jobs:
     - name: Run web tests
       run: |
         make test-ci
+    - name: Build jar
+      run: |
+        make build-jar
     - name: Login to Docker Hub
       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login -u "${{ secrets.NICKNAME }}" --password-stdin docker.pkg.github.com
     - name: Build
