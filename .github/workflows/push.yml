@@ -11,16 +11,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: DeLaGuardo/setup-clojure@2.0
-      with:
-        tools-deps: '1.10.1.469'
+    - uses: actions/checkout@v2
     - name: Run web tests
       run: |
         make test-ci
 
+    - uses: DeLaGuardo/setup-clojure@2.0
     - name: Build jar
       run: |
         make build-jar
+      with:
+        tools-deps: '1.10.1.469'
+
     - name: Login to Docker Hub
       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login -u "${{ secrets.NICKNAME }}" --password-stdin docker.pkg.github.com
     - name: Build
