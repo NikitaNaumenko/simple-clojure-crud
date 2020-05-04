@@ -1,0 +1,4 @@
+FROM clojure:tools-deps
+COPY . /app
+WORKDIR /app
+RUN apt-get update && apt-get install make

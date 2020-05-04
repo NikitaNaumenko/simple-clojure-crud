@@ -27,3 +27,8 @@
   :show-patient
   (fn [db _]
     (:patient db)))
+
+(rf/reg-sub
+  :flash-message
+  (fn [db _]
+    (:flash-message db)))

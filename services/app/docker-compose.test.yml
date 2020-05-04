@@ -6,14 +6,14 @@ services:
   db:
     image: postgres:12.2
     environment:
-      - POSTGRES_USER=docker
-      - POSTGRES_DB=hs-test
-      - POSTGRES_PASSWORD=docker
+      - POSTGRES_DB=test-db
   test:
     build:
       context: .
-      dockerfile: Dockerfile
-    command: clj -Atest
+      dockerfile: Dockerfile.test
+    command: make test-t
+    environment:
+      - CLJ_ENV=test
     env_file:
       - './.env.test'
     depends_on:

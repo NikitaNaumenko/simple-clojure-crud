@@ -13,8 +13,3 @@
 
 (defn remove-patients []
   (db/delete-patients))
-
-(defn test-request [resource web-app method & params]
-  (web-app {:request-method method :uri resource :params params}))
- 
-

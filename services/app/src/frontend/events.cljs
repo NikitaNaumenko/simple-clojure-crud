@@ -61,8 +61,9 @@
 
 (reg-event-fx
  :create-patient-success
- (fn [_ _]
-   {:set-hash {:hash "/patients"}}))
+ (fn [{:keys [db]} _]
+   {:db (assoc db :flash-message {:flash-type "success" :flash-message "Patient was created successfully"})
+    :set-hash {:hash "/patients"}}))
 
 (reg-event-fx
   :show-patient
@@ -79,7 +80,6 @@
     (-> db
        (assoc :patient patient)
        (assoc :loaded-patient true))))
-
 
 (reg-event-fx
   :edit-patient
@@ -105,13 +105,14 @@
                   :format (ajax/json-request-format)
                   :response-format (ajax/json-response-format {:keywords? true})
                   :params {:patient params}
-                  :on-success [:create-patient-success]
+                  :on-success [:update-patient-success]
                   :on-failure [:failure]}}))
 
 (reg-event-fx
  :update-patient-success
- (fn [{patient :db} [{props :patient}]]
-   {:set-hash {:hash "/patients"}}))
+ (fn [{:keys [db]} _]
+   {:db (assoc db :flash-message {:flash-type "success" :flash-message "Patient was updated successfully"})
+    :set-hash {:hash "/patients"}}))
 
 (reg-event-fx
   :delete-patient
@@ -125,4 +126,5 @@
 
 (reg-event-db :delete-patient-success
   (fn [db [_ _]]
-    {:set-hash {:hash "/patients"}}))
+       {:db (assoc db :flash-message {:flash-type "success" :flash-message "Patient was deleted successfully"})
+        :set-hash {:hash "/patients"}}))

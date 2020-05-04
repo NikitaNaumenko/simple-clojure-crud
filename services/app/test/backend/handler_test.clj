@@ -15,6 +15,8 @@
   (is (= 200
            (:status (app (mock/request :get "/patients" ))))))
 
+; (index-test)
+
 (deftest show-test
   (let [[patient] (db/find-by {:health_insurance_number insurance-number})]
    (is (= 200

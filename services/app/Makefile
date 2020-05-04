@@ -7,21 +7,12 @@ prepare-db:
 	dropdb hs-test --if-exists
 	createdb hs-test
 
-setup:
-	lein deps
-	lein migratus migrate
-
-test:
-	dropdb hs-test --if-exists
-	createdb hs-test
-	clj -Atest
-
-start:
-	lein run
-
-run:
-	lein figwheel
+test-t:
+	dropdb test-db --if-exists
+	createdb test-db
+	CLJ_ENV=test clojure -Amigratus
+	CLJ_ENV=test clojure -Atest
 
 repl:
-	lein repl
+	iced repl
 

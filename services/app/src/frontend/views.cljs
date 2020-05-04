@@ -189,11 +189,15 @@
     [home]))
 
 (defn root []
-  (let [active-page @(rf/subscribe [:active-page])]
+  (let [active-page @(rf/subscribe [:active-page])
+        {:keys [flash-type flash-message]} @(rf/subscribe [:flash-message])]
     [:div#root
       [:> rb/Navbar {:bg "dark" :variant "dark"}
         [:> rb/Nav {:class "mr-auto"}
           [:> rb/Nav.Link {:href "#/" } "Home"]
           [:> rb/Nav.Link {:href "#/patients"} "Patients"]
           [:> rb/Nav.Link {:href "#/patients/new"} "New Patient"]]]
+
+      (when flash-message
+        [:> rb/Alert {:key flash-type :variant flash-type} flash-message])
       [pages active-page]]))

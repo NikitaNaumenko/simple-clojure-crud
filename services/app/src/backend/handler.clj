@@ -55,7 +55,7 @@
       (wrap-json-response)
       (wrap-params)))
 
-(defonce server (jetty/run-jetty app {:port 3000  :join? false}))
+; (defonce server (jetty/run-jetty app {:port 3000  :join? false}))
 (comment
   (.start server)
   (.stop server))
