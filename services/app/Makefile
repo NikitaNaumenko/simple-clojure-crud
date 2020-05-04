@@ -11,7 +11,7 @@ prepare-test-db:
 	dropdb test-db --if-exists
 	createdb test-db
 
-test-t: prepare-test-db
+test-t:
 	CLJ_ENV=test clojure -Amigratus
 	CLJ_ENV=test clojure -Atest
 
