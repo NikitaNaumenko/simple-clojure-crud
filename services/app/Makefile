@@ -1,5 +1,5 @@
 include ../../.env
-export $(shell sed 's/=.*//' ../../.env)
+# export $(shell sed 's/=.*//' ../../.env)
 
 prepare-db:
 	dropdb hs-dev --if-exists
