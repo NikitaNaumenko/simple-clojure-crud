@@ -5,19 +5,21 @@ run-db:
 	docker run --rm --name pg-docker -d \
 		-e POSTGRES_PASSWORD=docker \
 		-e POSTGRES_USER=docker \
-		-e POSTGRES_DB=hs-dev \
+		-e POSTGRES_DB=dev-db \
 		-p 5432:5432 \
 		-v $(HOME)/docker/volumes/postgres:/var/lib/postgresql/data postgres
 
 test-ci:
 	docker-compose --file ./services/app/docker-compose.test.yml run test
 
+.ONESHELL:
 build-jar:
-	cd services/app && mkdir classes
-	cd services/app && yarn install
-	cd services/app && yarn build
-	cd services/app && CLJ_ENV=production clojure -e "(compile 'backend.core)"
-	cd services/app && CLJ_ENV=production clojure -A:uberjar --main-class backend.core
+	cd services/app
+	mkdir classes
+	yarn install
+	yarn build
+	CLJ_ENV=production clojure -e "(compile 'backend.core)"
+	CLJ_ENV=production clojure -A:uberjar --main-class backend.core
 
 project-files-touch:
 	mkdir -p tmp
