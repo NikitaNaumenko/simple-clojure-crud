@@ -31,7 +31,7 @@
 
 (reg-event-fx
   :get-patients
-  (fn [db [_ params]]
+  (fn [_ [_ params]]
     {:http-xhrio {:method :get
                   :uri "/patients"
                   :url-params params
@@ -50,7 +50,7 @@
 
 (reg-event-fx
   :create-patient
-  (fn [db [_ params]]
+  (fn [_ [_ params]]
     {:http-xhrio {:method :post
                   :uri "/patients"
                   :format (ajax/json-request-format)
@@ -67,7 +67,7 @@
 
 (reg-event-fx
   :show-patient
-  (fn [db [_ {:keys [id]}]]
+  (fn [ [_ {:keys [id]}]]
     {:http-xhrio {:method :get
                   :uri (str "/patients/" id)
                   :format (ajax/json-request-format)
@@ -83,7 +83,7 @@
 
 (reg-event-fx
   :edit-patient
-  (fn [db [_ {:keys [id]}]]
+  (fn [_ [_ {:keys [id]}]]
     {:http-xhrio {:method :get
                   :uri (str "/patients/" id "/edit")
                   :format (ajax/json-request-format)
@@ -99,7 +99,7 @@
 
 (reg-event-fx
   :update-patient
-  (fn [db [_ params id]]
+  (fn [_ [_ params id]]
     {:http-xhrio {:method :patch
                   :uri (str "/patients/" id)
                   :format (ajax/json-request-format)
@@ -116,7 +116,7 @@
 
 (reg-event-fx
   :delete-patient
-  (fn [db [_ id]]
+  (fn [_ [_ id]]
     {:http-xhrio {:method :delete
                   :uri (str "/patients/" id)
                   :format (ajax/json-request-format)

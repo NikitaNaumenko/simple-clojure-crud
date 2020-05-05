@@ -30,17 +30,15 @@
   (sql/find-by-keys ds :patients params))
 
 (defn update-patient [id {:strs [full_name date_of_birth gender address health_insurance_number]}]
-  (let [parsed_date (utils/parse-date date_of_birth)]
-    (let [patient_id (utils/parse-int id)]
-      (println full_name)
-      (sql/update! ds :patients {:full_name full_name
+  (let [parsed_date (utils/parse-date date_of_birth)
+        patient_id (utils/parse-int id)]
+    (sql/update! ds :patients {:full_name full_name
                                  :date_of_birth parsed_date
                                  :gender gender
                                  :address address
                                  :health_insurance_number health_insurance_number}
-                   {:id patient_id}))))
+                   {:id patient_id})))
 
-; (update-patient "2" {"full_name" "Igor"})
 (defn destroy-patient [id]
   (sql/delete! ds :patients {:id id}))
 

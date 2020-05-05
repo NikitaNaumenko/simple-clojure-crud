@@ -5,8 +5,6 @@
    [compojure.core :as compojure]
    [ring.adapter.jetty :as jetty]
    [ring.middleware.resource :refer [wrap-resource]]
-   [ring.middleware.content-type :refer [wrap-content-type]]
-   [ring.middleware.not-modified :refer [wrap-not-modified]]
    [ring.middleware.json :refer [wrap-json-response wrap-json-params]]
    [ring.middleware.params :refer [wrap-params]]
    [ring.util.response :refer [response]]
@@ -55,7 +53,7 @@
       (wrap-json-response)
       (wrap-params)))
 
-; (defonce server (jetty/run-jetty app {:port 3000  :join? false}))
 (comment
+  (defonce server (jetty/run-jetty app {:port 3000  :join? false}))
   (.start server)
   (.stop server))

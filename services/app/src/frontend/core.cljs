@@ -1,14 +1,11 @@
 (ns frontend.core
   (:require [shadow.dom :as dom]
-            [reagent.core :as r]
             [reagent.dom :as rdom]
             [re-frame.core :as rf]
             [frontend.events]
             [goog.events :as events]
             [frontend.views :as views]
-            [secretary.core :as secretary :refer-macros [defroute]]
-            [frontend.subs :as subs]
-            [accountant.core :as accountant])
+            [secretary.core :as secretary :refer-macros [defroute]])
   (:import [goog History]
            [goog.history EventType]))
 
@@ -21,14 +18,13 @@
 
 (defn routes
   []
-  (set! (.-hash js/location) "/")      ;; on app startup set location to "/"
-  (secretary/set-config! :prefix "#")  ;; and don't forget about "#" prefix
+  (set! (.-hash js/location) "/")
+  (secretary/set-config! :prefix "#")
   (defroute "/" [] (rf/dispatch [:set-active-page {:page :home}]))
   (defroute "/patients" [] (rf/dispatch [:set-active-page {:page :patients}]))
   (defroute "/patients/new" [] (rf/dispatch [:set-active-page {:page :new-patient}])) 
   (defroute "/patients/:id" [id] (rf/dispatch [:set-active-page {:page :show-patient :id id}]))
-  (defroute "/patients/:id/edit" [id] (rf/dispatch [:set-active-page {:page :edit-patient :id id}]))
-  )
+  (defroute "/patients/:id/edit" [id] (rf/dispatch [:set-active-page {:page :edit-patient :id id}])))
 ; 
 (def history
   (doto (History.)

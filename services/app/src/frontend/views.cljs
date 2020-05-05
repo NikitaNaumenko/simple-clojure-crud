@@ -117,12 +117,11 @@
                   :gender gender
                   :health_insurance_number health_insurance_number}
         
-         form (reagent/atom default)
-         ]
+         form (reagent/atom default)]
     (let [loaded @(rf/subscribe [:loaded-patient])
           update-patient (fn [event form]
                             (.preventDefault event)
-                            (rf/dispatch [:update-patient form id])) ]
+                            (rf/dispatch [:update-patient form id]))]
           (when loaded
             (fn []
               [:div.container
@@ -163,7 +162,6 @@
 
 (defn show-patient []
   (let [{full_name :full_name
-         id :id
          date_of_birth :date_of_birth
          address :address
          gender :gender
