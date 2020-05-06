@@ -28,4 +28,3 @@
 ;apply pending migrations
 (defn -main []
  (migratus/migrate config))
-
