@@ -3,8 +3,6 @@ REGISTRY := docker.pkg.github.com
 
 run-db:
 	docker run --rm --name pg-docker -d \
-		-e POSTGRES_PASSWORD=docker \
-		-e POSTGRES_USER=docker \
 		-e POSTGRES_DB=dev-db \
 		-p 5432:5432 \
 		-v $(HOME)/docker/volumes/postgres:/var/lib/postgresql/data postgres
