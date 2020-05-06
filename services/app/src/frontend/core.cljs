@@ -2,6 +2,8 @@
   (:require [shadow.dom :as dom]
             [reagent.dom :as rdom]
             [re-frame.core :as rf]
+            [reagent.core :as rc]
+            [frontend.subs :as subs]
             [frontend.events]
             [goog.events :as events]
             [frontend.views :as views]

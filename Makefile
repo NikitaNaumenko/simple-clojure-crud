@@ -29,6 +29,12 @@ project-env-generate: project-files-touch
 		-v $(CURDIR):/runner/project \
 		ansible/ansible-runner
 
+prod-project-env-generate:
+	docker run --rm -e RUNNER_PLAYBOOK=ansible/production.yml \
+		-v $(CURDIR)/ansible/production:/runner/inventory \
+		-v $(CURDIR):/runner/project \
+		ansible/ansible-runner
+
 app-docker-build-production:
 	docker build --cache-from=$(REGISTRY)/nikitanaumenko/simple-clojure-crud/app --tag $(REGISTRY)/nikitanaumenko/simple-clojure-crud/app:$(VERSION) services/app
 
