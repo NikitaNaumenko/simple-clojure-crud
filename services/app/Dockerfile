@@ -1,5 +1,6 @@
 FROM clojure:tools-deps
 WORKDIR /app
+COPY . /app
 RUN apt-get update && apt-get install make
 COPY /target/app.jar /app/app.jar
 EXPOSE 3000
