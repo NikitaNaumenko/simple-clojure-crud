@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: clojure-dep
+  name: clojure-web
   labels:
-    app: simple-clojure-crud
+    app: web
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: simple-clojure-crud
+      app: web
   template:
     metadata:
       labels:
-        app: simple-clojure-crud
+        app: web
     spec:
       containers:
       - name: app
@@ -22,6 +22,9 @@ spec:
         envFrom:
           - configMapRef:
               name: app-config-map
+        command:
+          - make
+          - prod-start
       - name: caddy
         image: docker.pkg.github.com/nikitanaumenko/simple-clojure-crud/caddy:latest
         ports:

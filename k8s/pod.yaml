@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: simple-clojure-crud-pod
+  name: web
   labels:
-    app: simple-clojure-crud
+    app: web
 spec:
   containers:
   - name: app

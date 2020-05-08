@@ -9,5 +9,9 @@ run-test:
 	CLJ_ENV=test clojure -Amigratus
 	CLJ_ENV=test clojure -Atest
 
+prod-start:
+	clojure -Amigratus
+	java -jar app.jar --main-class backend.core
+
 install-deps:
 	yarn install
