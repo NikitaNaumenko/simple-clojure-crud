@@ -18,7 +18,6 @@
   ([] (sql/query ds ["SELECT * FROM patients"] {:builder-fn rs/as-unqualified-lower-maps}))
   ([params]
     (let [value (str "%" (params "query") "%")]
-     (println value)
       (sql/query ds
                  ["SELECT * FROM patients WHERE full_name ILIKE ? OR CAST(id AS TEXT) ILIKE ?" value value]
                  {:builder-fn rs/as-unqualified-lower-maps}))))

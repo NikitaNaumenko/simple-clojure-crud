@@ -67,7 +67,7 @@
 
 (reg-event-fx
   :show-patient
-  (fn [ [_ {:keys [id]}]]
+  (fn [_ [_ {:keys [id]}]]
     {:http-xhrio {:method :get
                   :uri (str "/patients/" id)
                   :format (ajax/json-request-format)

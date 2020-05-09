@@ -166,16 +166,16 @@
          address :address
          gender :gender
          health_insurance_number :health_insurance_number } @(rf/subscribe [:show-patient])]
-[:div.container
-                [:div.text-center.p-2
-                  [:h1 "Show Patient"]]
-                [:div.row.justify-content-center
-                  [:div.col-8
-                    [:div full_name]
-                    [:div date_of_birth]
-                    [:div gender]
-                    [:div address]
-                    [:div health_insurance_number]]]]))
+  [:div.container
+    [:div.text-center.p-2
+      [:h1 "Show Patient"]]
+    [:div.row.justify-content-center
+      [:div.col-8
+        [:div full_name]
+        [:div date_of_birth]
+        [:div gender]
+        [:div address]
+        [:div health_insurance_number]]]]))
 
 (defn pages [page-name]
   (case page-name
