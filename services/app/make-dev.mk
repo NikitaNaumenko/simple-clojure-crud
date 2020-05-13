@@ -1,5 +1,5 @@
--include ../../.env.prod
-export $(shell sed 's/=.*//' ../../.env.prod)
+-include ../../.env
+export $(shell sed 's/=.*//' ../../.env)
 
 prepare-db:
 	dropdb dev-db --if-exists

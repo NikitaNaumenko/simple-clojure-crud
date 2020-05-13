@@ -15,3 +15,6 @@ prod-start:
 
 install-deps:
 	yarn install
+
+test-repl:
+	CLJ_ENV=test iced repl -A:test-path
