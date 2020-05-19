@@ -1,59 +1,102 @@
 (ns backend.handler
-  (:require
-   [backend.models.patient :as db]
-   [backend.views :as views]
-   [compojure.core :as compojure]
-   [ring.adapter.jetty :as jetty]
-   [ring.middleware.resource :refer [wrap-resource]]
-   [ring.middleware.json :refer [wrap-json-response wrap-json-params]]
-   [ring.middleware.params :refer [wrap-params]]
-   [ring.util.response :refer [response]]
-   [backend.utils :as utils]))
+  (:require [backend.models.patient :as db]
+            [ring.adapter.jetty :as jetty]
+            [ring.middleware.resource :refer [wrap-resource]]
+            [ring.middleware.json :refer [wrap-json-response wrap-json-params]]
+            [ring.middleware.params :refer [wrap-params]]
+            [ring.util.response :refer [response]]
+            [backend.utils :as utils]
+            [clojure.core.match :refer [match]]
+            [backend.db :as db-connection]
+            [clojure.string :as str]))
 
-(defn index-patients [params]
-  (if (empty? params)
-    (let [patients (db/get-patients )]
-      {:patients patients})
-    (let [patients (db/get-patients params)]
-      (println patients)
-      {:patients patients})))
+(defn index-patients
+  [db-connection {params :params}]
+  (let [patients (db/get-patients db-connection params)]
+    {:status 200, :body {:patients patients}}))
 
-(defn create-patient [params]
-  (let [patient-params (get-in params [:params "patient"])]
-    (db/create-patient patient-params)))
+(defn create-patient
+  [db-connection {params :params}]
+  (let [patient-params (get-in params ["patient"])
+        patient (db/create-patient db-connection patient-params)]
+    {:status 200, :body {:patient patient}}))
 
-(defn show-patient [id]
-  (let [patient (db/get-patient (utils/parse-int id))]
-    {:patient patient}))
+(defn show-patient
+  [db-connection id _]
+  (let [patient (db/get-patient db-connection (utils/parse-int id))]
+    {:status 200, :body {:patient patient}}))
 
-(defn edit-patient [id]
-  (let [{:keys [date_of_birth] :as patient}
-        (db/get-patient (utils/parse-int id))]
-    {:patient (merge patient {:date_of_birth (utils/date-to-str date_of_birth)})}))
+(defn edit-patient
+  [db-connection id _]
+  (let [{date_of_birth :date_of_birth, :as patient}
+          (db/get-patient db-connection (utils/parse-int id))
+        body {:patient (merge patient
+                              {:date_of_birth (utils/date-to-str
+                                                date_of_birth)})}]
+    {:status 200, :body body}))
 
-(defn update-patient [id params]
-  (db/update-patient id params))
+(defn update-patient
+  [db-connection id {params :params}]
+  (let [patient
+          (db/update-patient db-connection id (get-in params ["patient"]))]
+    {:status 200, :body {:patient patient}}))
 
-(defn destroy-patient [id]
-  (db/destroy-patient (utils/parse-int id)))
+(defn destroy-patient
+  [db-connection id]
+  (db/destroy-patient db-connection (utils/parse-int id)))
 
-(compojure/defroutes routes
-  (compojure/GET "/" [] (views/layout))
-  (compojure/GET "/patients" params (response (index-patients (params :query-params))))
-  (compojure/GET "/patients/:id" [id] (response (show-patient id)))
-  (compojure/POST "/patients" params (response (create-patient params)))
-  (compojure/GET "/patients/:id/edit" [id] (response (edit-patient id)))
-  (compojure/PATCH "/patients/:id" [id patient] (response (update-patient id patient)))
-  (compojure/DELETE "/patients/:id" [id] (response (destroy-patient id))))
+(def root-path "/")
+(defn root-path? [path] (= path root-path))
 
-(def app
-  (-> #'routes
+(defn find-action
+  [request-method id action]
+  (match [request-method id action]
+    [:get nil nil] :index
+    [:get id nil] :show
+    [:get id "edit"] :edit
+    [:post nil nil] :create
+    [:patch id nil] :update
+    [:delete id nil] :destroy))
+
+(defn build-route-meta
+  [path]
+  (zipmap [:route :id :action] (filter #(not= "" %) (str/split path #"\/"))))
+
+(defn build-route
+  [method path]
+  (if (root-path? path)
+    {:method method, :route path}
+    (let [{action :action, id :id, route :route} (build-route-meta path)]
+      (assoc {:method method, :route route, :id id}
+        :action (find-action method id action)))))
+
+(defn dispatch
+  [{uri :uri, request-method :request-method, :as request} db-connection]
+  (let [{id :id, :as route} (build-route request-method uri)]
+    (match [route]
+      [{:method :get, :route "/"}] (index-patients db-connection request)
+      [{:method :get, :route "patients", :action :edit}]
+        (edit-patient db-connection id request)
+      [{:method :get, :route "patients", :action :show}]
+        (show-patient db-connection id request)
+      [{:method :post, :route "patients", :action :create}]
+        (create-patient db-connection request)
+      [{:method :patch, :route "patients", :action :update}]
+        (update-patient db-connection id request)
+      [{:method :delete, :route "patients", :action :delete}]
+        (destroy-patient db-connection id request)
+      :else {:status 404, :body "Not found"})))
+
+(defn app
+  [db-connection]
+  (-> (fn [request] (dispatch request db-connection))
       (wrap-resource "public")
       (wrap-json-params)
       (wrap-json-response)
       (wrap-params)))
 
-(comment
-  (defonce server (jetty/run-jetty app {:port 3000  :join? false}))
-  (.start server)
-  (.stop server))
+(comment (defonce server
+                  (jetty/run-jetty (app (db-connection/ds-dev))
+                                   {:port 3000, :join? false}))
+         (.start server)
+         (.stop server))

@@ -10,4 +10,4 @@ run-migrations:
 	clojure -Amigratus
 
 repl:
-	iced repl
+	CLJ_ENV=test iced repl -A:test-path

@@ -11,12 +11,9 @@
   (:import [goog History]
            [goog.history EventType]))
 
-(defn render []
-  (rdom/render [views/root] (dom/by-id "app")))
+(defn render [] (rdom/render [views/root] (dom/by-id "app")))
 
-(defn reload! []
-  (rf/clear-subscription-cache!)
-  (render))
+(defn reload! [] (rf/clear-subscription-cache!) (render))
 
 (defn routes
   []
@@ -24,9 +21,15 @@
   (secretary/set-config! :prefix "#")
   (defroute "/" [] (rf/dispatch [:set-active-page {:page :home}]))
   (defroute "/patients" [] (rf/dispatch [:set-active-page {:page :patients}]))
-  (defroute "/patients/new" [] (rf/dispatch [:set-active-page {:page :new-patient}])) 
-  (defroute "/patients/:id" [id] (rf/dispatch [:set-active-page {:page :show-patient :id id}]))
-  (defroute "/patients/:id/edit" [id] (rf/dispatch [:set-active-page {:page :edit-patient :id id}])))
+  (defroute "/patients/new"
+            []
+            (rf/dispatch [:set-active-page {:page :new-patient}]))
+  (defroute "/patients/:id"
+            [id]
+            (rf/dispatch [:set-active-page {:page :show-patient, :id id}]))
+  (defroute "/patients/:id/edit"
+            [id]
+            (rf/dispatch [:set-active-page {:page :edit-patient, :id id}])))
 ; 
 (def history
   (doto (History.)
@@ -34,8 +37,4 @@
                    (fn [event] (secretary/dispatch! (.-token event))))
     (.setEnabled true)))
 
-(defn ^:export main
-  []
-  (rf/dispatch-sync [:initialize-db])
-  (routes)
-  (reload!))
+(defn ^:export main [] (rf/dispatch-sync [:initialize-db]) (routes) (reload!))

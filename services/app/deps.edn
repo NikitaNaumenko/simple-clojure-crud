@@ -1,34 +1,34 @@
-{:paths ["src", "resources", "classes"]
- :deps {org.clojure/clojure {:mvn/version "1.10.1"}
-        org.clojure/clojurescript {:mvn/version "1.10.597"}
-
-        hiccup {:mvn/version "1.0.5"}
-        thheller/shadow-cljs {:mvn/version "2.8.83"}
-        reagent {:mvn/version "0.10.0"}
-        re-frame {:mvn/version "0.12.0"}
-        clj-commons/secretary {:mvn/version "1.2.4"}
-        day8.re-frame/http-fx {:mvn/version "v0.2.0"}
-        venantius/accountant {:mvn/version "0.2.5"}
-
-        seancorfield/next.jdbc {:mvn/version "1.0.424"}
-        org.postgresql/postgresql {:mvn/version "42.2.12.jre7"}
-        migratus {:mvn/version "1.2.8"}
-
-        ring/ring-core  {:mvn/version "1.8.0"}
-        compojure {:mvn/version "1.6.1"}
-        ring/ring-jetty-adapter {:mvn/version "1.8.0"}
-        ring/ring-json {:mvn/version "0.5.0"}
-        ring/ring-mock {:mvn/version "0.4.0"}
-        }
-
- :aliases {:test {:extra-paths ["test"]
-                  :extra-deps {com.cognitect/test-runner {:git/url "https://github.com/cognitect-labs/test-runner.git"
-                                                          :sha "209b64504cb3bd3b99ecfec7937b358a879f55c1"}
-                               ring/ring-mock {:mvn/version "0.4.0"}}
-                 :main-opts ["-m" "cognitect.test-runner"]}
-           :test-path {:extra-paths ["test"]}
-           :migratus {:main-opts ["-m" "backend.migrations"]}
-           :uberjar {:extra-deps {uberdeps {:mvn/version "0.1.10"}}
-                     :main-opts  ["-m" "uberdeps.uberjar"]}
-           }
- }
+{:aliases
+   {:migratus {:main-opts ["-m" "backend.migrations"]},
+    :test
+      {:extra-deps
+         {com.cognitect/test-runner
+            {:git/url "https://github.com/cognitect-labs/test-runner.git",
+             :sha "209b64504cb3bd3b99ecfec7937b358a879f55c1"},
+          ring/ring-mock #:mvn{:version "0.4.0"}},
+       :extra-paths ["test"],
+       :main-opts ["-m" "cognitect.test-runner"]},
+    :test-path {:extra-paths ["test"]},
+    :uberjar
+      {:extra-deps {uberdeps #:mvn{:version "0.1.10"}},
+       :main-opts ["-m" "uberdeps.uberjar"]}},
+ :deps
+   {clj-commons/secretary #:mvn{:version "1.2.4"},
+    compojure #:mvn{:version "1.6.1"},
+    day8.re-frame/http-fx #:mvn{:version "v0.2.0"},
+    hiccup #:mvn{:version "1.0.5"},
+    migratus #:mvn{:version "1.2.8"},
+    org.clojure/clojure #:mvn{:version "1.10.1"},
+    org.clojure/clojurescript #:mvn{:version "1.10.597"},
+    org.clojure/core.match #:mvn{:version "1.0.0"},
+    org.postgresql/postgresql #:mvn{:version "42.2.12.jre7"},
+    re-frame #:mvn{:version "0.12.0"},
+    reagent #:mvn{:version "0.10.0"},
+    ring/ring-core #:mvn{:version "1.8.0"},
+    ring/ring-jetty-adapter #:mvn{:version "1.8.0"},
+    ring/ring-json #:mvn{:version "0.5.0"},
+    ring/ring-mock #:mvn{:version "0.4.0"},
+    seancorfield/next.jdbc #:mvn{:version "1.0.424"},
+    thheller/shadow-cljs #:mvn{:version "2.8.83"},
+    venantius/accountant #:mvn{:version "0.2.5"}},
+ :paths ["src" "resources" "classes"]}

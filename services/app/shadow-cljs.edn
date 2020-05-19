@@ -1,8 +1,9 @@
-{:deps true
- :builds
-   {:app {:asset-path "/js"
-          :modules {:main {:init-fn frontend.core/main}}
-          :output-dir "resources/public/js"
-          :target :browser}}
- :nrepl {:port 3333}
+{:builds
+   {:app
+      {:asset-path "/js",
+       :modules {:main {:init-fn frontend.core/main}},
+       :output-dir "resources/public/js",
+       :target :browser}},
+ :deps true,
+ :nrepl {:port 3333},
  :source-paths ["src"]}
