@@ -24,7 +24,7 @@
 (defn show-patient
   [db-connection id _]
   (let [patient (db/get-patient db-connection (utils/parse-int id))]
-    {:status 200, :body {:patient patient}}))
+    (if patient {:status 200, :body {:patient patient}} {:status 404})))
 
 (defn edit-patient
   [db-connection id _]
@@ -42,7 +42,7 @@
     {:status 200, :body {:patient patient}}))
 
 (defn destroy-patient
-  [db-connection id]
+  [db-connection id request]
   (db/destroy-patient db-connection (utils/parse-int id)))
 
 (def root-path "/")
@@ -83,7 +83,7 @@
         (create-patient db-connection request)
       [{:method :patch, :route "patients", :action :update}]
         (update-patient db-connection id request)
-      [{:method :delete, :route "patients", :action :delete}]
+      [{:method :delete, :route "patients", :action :destroy}]
         (destroy-patient db-connection id request)
       :else {:status 404, :body "Not found"})))
 

@@ -1,53 +1,61 @@
 (ns backend.handler-test
   (:require [clojure.test :refer :all]
-            [backend.handler :refer [app]]
             [backend.models.patient :as db]
             [ring.mock.request :as mock]
-            [backend.helpers :refer :all]
-            [backend.db :as db-connection]))
+            [cheshire.core :as json]
+            [backend.helpers :refer :all]))
 
 (use-fixtures :each
-              (fn [f]
-                (create-patient)
-                (f)
-                (remove-patients)))
+  (fn [f]
+    (create-patient)
+    (f)
+    (remove-patients)))
 
 (deftest index-test
   (is (= 200
-        (:status ((app (db-connection/ds-test)) (mock/request :get "/"))))))
+         (:status (test-app (mock/request :get "/"))))))
 
 (deftest show-test
-  (let [[patient] (db/find-by (db-connection/ds-test) {:health_insurance_number insurance-number})]
+  (let [[patient] (get-patient-by-insurance-number insurance-number)
+        patient_path (str "/patients/" (patient :patients/id))]
     (is (= 200
-           (:status ((app (db-connection/ds-test))
-                     (mock/request :get (str "/patients/" (patient :patients/id)))))))))
+           (:status (test-app (mock/request :get patient_path)))))))
 
 (deftest edit-test
-  (let [[patient] (db/find-by (db-connection/ds-test) {:health_insurance_number insurance-number})]
+  (let [[patient] (get-patient-by-insurance-number insurance-number)
+        patient_path (str "/patients/" (patient :patients/id) "/edit")]
     (is (= 200
-          (:status ((app (db-connection/ds-test))
-                    (mock/request :get
-                                  (str "/patients/"
-                                       (patient :patients/id)
-                                       "/edit"))))))))
+           (:status (test-app (mock/request :get patient_path)))))))
 
+(defn create-patient-request []
+  (test-app (-> (mock/request :post "/patients")
+                (mock/json-body {"patient" {"full_name" "Test"
+                                            "date_of_birth" "2020-02-02"
+                                            "gender" "male"
+                                            "address" "Bar"
+                                            "health_insurance_number" "12345678"}}))))
 (deftest create-test
-  (is (= 200
-         (:status ((app (db-connection/ds-test))
-                   (-> (mock/request :post "/patients")
-                           (mock/json-body {"patient" {"full_name" "Test"
-                                                       "date_of_birth" "2020-02-02"
-                                                       "gender" "male"
-                                                       "address" "Bar"
-                                                       "health_insurance_number" "12345678"}})))))))
+  (let [{body :body} (create-patient-request)
+        {patient :patient} (json/decode body true)
+        patient_path (str "/patients/" (patient :patients/id))]
+    (is (= 200
+           (:status (test-app (mock/request :get patient_path)))))))
 
 (deftest update-test
-  (let [[patient] (db/find-by (db-connection/ds-test) {:health_insurance_number insurance-number})]
+  (let [[patient] (get-patient-by-insurance-number insurance-number)
+        patient_path (str "/patients/" (patient :patients/id))]
     (is (= 200
-         (:status ((app (db-connection/ds-test))
-                   (-> (mock/request :patch (str "/patients/" (patient :patients/id)))
-                       (mock/json-body {"patient" {"full_name" "Test"
-                                                   "date_of_birth" "2020-02-02"
-                                                   "gender" "male"
-                                                   "address" "Bar"
-                                                   "health_insurance_number" "12345678"}}))))))))
+           (:status (test-app
+                     (-> (mock/request :patch patient_path)
+                         (mock/json-body {"patient" {"full_name" "Test"
+                                                     "date_of_birth" "2020-02-02"
+                                                     "gender" "male"
+                                                     "address" "Bar"
+                                                     "health_insurance_number" "12345678"}}))))))))
+
+(deftest delete-test
+  (let [[patient] (get-patient-by-insurance-number insurance-number)
+        patient_path (str "/patients/" (patient :patients/id))]
+    (test-app (mock/request :delete patient_path))
+    (is (= 404
+           (:status (test-app (mock/request :get patient_path)))))))
