@@ -13,7 +13,7 @@
 
 (deftest index-test
   (is (= 200
-         (:status (test-app (mock/request :get "/"))))))
+         (:status (test-app (mock/request :get "/patients"))))))
 
 (deftest show-test
   (let [[patient] (get-patient-by-insurance-number insurance-number)
