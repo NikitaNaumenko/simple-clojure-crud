@@ -2,13 +2,46 @@
   (:require [re-frame.core :refer [reg-event-fx reg-event-db reg-fx]]
             [day8.re-frame.http-fx]
             [frontend.db :as db]
+            [clojure.string :as str]
             [ajax.core :as ajax]))
 
-(reg-fx :set-hash (fn [{:keys [hash]}] (set! (.-hash js/location) hash)))
+(defn url-encode [x]
+     (js/encodeURIComponent x))
 
-(reg-event-db :initialize-db (fn [_ _] db/default-db))
+(defn gen-query-string [params]
+  (->> params
+       (map (fn [[k v]]
+              (cond
+                (set? v) (str (name k) "=" (str/join "," v))
+                :else (str (name k) "=" (url-encode v)))))
+       (str/join "&")
+       (str "?")))
+  
+(defn build-path [db]
+  (let [current-path (str "/" (name  (:active-page db)))
+        query-string (gen-query-string (select-keys db [:filter]))]
+    (str current-path query-string)))
 
-; Navigate on page
+(reg-event-fx
+  :set-hash
+  (fn [params]
+    (let [path (build-path (:db params))]
+      (set! (.-hash js/location) path))))
+
+(reg-event-fx
+ :filter-table
+ (fn [{db :db} [_ q]]
+   {:dispatch-debounce {:event [:set-hash {:q q}]
+                        :delay 500
+                        :key :tables-search}
+    :db (assoc db :filter q)}))
+
+(reg-event-fx
+ :change-new-patient
+ (fn [{db :db} [_ value key]]
+   (let [changed-patient (assoc (:new-patient db) key value)]
+     {:db (assoc db :new-patient changed-patient)})))
+
 (reg-event-fx :set-active-page
               (fn [{:keys [db]} [_ {:keys [page id]}]]
                 (let [set-page (assoc db :active-page page)]
@@ -19,19 +52,27 @@
                                    :dispatch [:edit-patient {:id id}]}
                     :show-patient {:db (assoc set-page :show-patient id),
                                    :dispatch [:show-patient {:id id}]}
-                    :new-patient {:db set-page}))))
+                    :new-patient {:db set-page
+                                  :dispatch [:init-new-patient]}))))
 
 (reg-event-fx :get-patients
-              (fn [_ [_ params]]
+              (fn [{db :db} [_ params]]
                 {:http-xhrio {:method :get,
                               :uri "/patients",
-                              :url-params params,
+                              :url-params (select-keys db [:filter]),
                               :format (ajax/json-request-format),
                               :response-format (ajax/json-response-format
                                                  {:keywords? true}),
                               :on-success [:get-patients-success],
                               :on-failure [::failure]}}))
 
+(reg-event-db :init-new-patient
+              (fn [db _]
+                (assoc db :new-patient {:full_name ""
+                                                 :gender ""
+                                                 :date_of_birth ""
+                                                 :address ""
+                                                 :health_insurance_number ""})))
 (reg-event-db :get-patients-success
               (fn [db [_ {patients :patients}]] (assoc db :patients patients)))
 
@@ -93,8 +134,7 @@
                 {:http-xhrio {:method :patch,
                               :uri (str "/patients/" id),
                               :format (ajax/json-request-format),
-                              :response-format (ajax/json-response-format
-                                                 {:keywords? true}),
+                              :response-format (ajax/json-response-format {:keywords? true}),
                               :params {:patient params},
                               :on-success [:update-patient-success],
                               :on-failure [:failure]}}))

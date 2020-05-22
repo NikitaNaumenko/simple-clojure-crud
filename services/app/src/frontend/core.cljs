@@ -5,6 +5,7 @@
             [reagent.core :as rc]
             [frontend.subs :as subs]
             [frontend.events]
+            [frontend.debounce]
             [goog.events :as events]
             [frontend.views :as views]
             [secretary.core :as secretary :refer-macros [defroute]])
@@ -15,26 +16,25 @@
 
 (defn reload! [] (rf/clear-subscription-cache!) (render))
 
-(defn routes
-  []
-  (set! (.-hash js/location) "/")
-  (secretary/set-config! :prefix "#")
-  (defroute "/" [] (rf/dispatch [:set-active-page {:page :home}]))
-  (defroute "/patients" [] (rf/dispatch [:set-active-page {:page :patients}]))
-  (defroute "/patients/new"
-            []
-            (rf/dispatch [:set-active-page {:page :new-patient}]))
-  (defroute "/patients/:id"
-            [id]
-            (rf/dispatch [:set-active-page {:page :show-patient, :id id}]))
-  (defroute "/patients/:id/edit"
-            [id]
-            (rf/dispatch [:set-active-page {:page :edit-patient, :id id}])))
-; 
+(secretary/set-config! :prefix "#")
+(defroute "/" [] (rf/dispatch [:set-active-page {:page :home}]))
+(defroute "/patients/new" []
+          (rf/dispatch [:set-active-page {:page :new-patient}]) )
+(defroute "/patients" [query-params]
+  (rf/dispatch [:set-active-page {:page :patients :query query-params}]))
+
+(defroute "/patients/:id"
+          [id]
+          (rf/dispatch [:set-active-page {:page :show-patient, :id id}]))
+(defroute "/patients/:id/edit"
+          [id]
+          (rf/dispatch [:set-active-page {:page :edit-patient, :id id}]))
+  
 (def history
   (doto (History.)
     (events/listen EventType.NAVIGATE
-                   (fn [event] (secretary/dispatch! (.-token event))))
+                   (fn [event]
+                     (secretary/dispatch! (.-token event))))
     (.setEnabled true)))
 
-(defn ^:export main [] (rf/dispatch-sync [:initialize-db]) (routes) (reload!))
+(defn ^:export main []  (reload!))

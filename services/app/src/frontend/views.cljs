@@ -5,32 +5,20 @@
 
 (defn home [] [:h1 "hello"])
 
+(defn search []
+  (let [sub (rf/subscribe [:filter])
+        on-search #(rf/dispatch [:filter-table (.. % -target -value)])]
+    (fn []
+      (let [m @sub]
+        [:input.search {:placeholder "Search" :on-change on-search :value m}]))))
+
 (defn patients
   []
-  (let [default {:query ""}
-        content (reagent/atom default)]
-    (fn []
+  (fn []
       [:div.container
+       [:div [search]]
        [:div.row
         [:div.col-12
-         [:div.p4
-          (let [{:keys [query]} @content
-                search-patients (fn [event form]
-                                  (.preventDefault event)
-                                  (rf/dispatch [:get-patients form]))]
-            [:> rb/Form {:on-submit #(search-patients % @content)}
-             [:> rb/Form.Group {:controlId "formGroupFullName"}
-              [:> rb/Form.Label "Search"]
-              [:> rb/Form.Control
-               {:type "text",
-                :placeholder "Enter Search query",
-                :value query,
-                :on-change #(swap! content assoc
-                              :query
-                              (-> %
-                                  .-target
-                                  .-value))}]]
-             [:> rb/Button {:variant "primary", :type "submit"} "Submit"]])]
          (let [patients @(rf/subscribe [:patients])
                columns ["Id" "Full Name" "Date of Birth" "Gender" "Address"
                         "Health Insurance Number" ""]]
@@ -53,16 +41,11 @@
                  [:a
                   {:href "#/patients",
                    :on-click #(rf/dispatch [:delete-patient (patient :id)]),
-                   :class "btn btn-danger"} "Delete"]]])]])]]])))
+                   :class "btn btn-danger"} "Delete"]]])]])]]]))
 
 (defn new-patient
   []
-  (let [default {:full_name "",
-                 :date_of_birth "",
-                 :address "",
-                 :health_insurance_number "",
-                 :gender ""}
-        form (reagent/atom default)]
+  (let [form (rf/subscribe [:new-patient])]
     (fn []
       (let [{:keys [full_name date_of_birth address health_insurance_number
                     gender]}
@@ -80,52 +63,32 @@
               {:type "text",
                :placeholder "Enter Full Name",
                :value full_name,
-               :on-change #(swap! form assoc
-                             :full_name
-                             (-> %
-                                 .-target
-                                 .-value))}]]
+               :on-change #(rf/dispatch [:change-new-patient (.. % -target -value) :full_name])}]]
             [:> rb/Form.Group {:controlId "formGroupDateOfBirth"}
              [:> rb/Form.Label "Date of Birth"]
              [:> rb/Form.Control
               {:type "date",
                :value date_of_birth,
-               :on-change #(swap! form assoc
-                             :date_of_birth
-                             (-> %
-                                 .-target
-                                 .-value))}]]
+               :on-change #(rf/dispatch [:change-new-patient (.. % -target -value) :date_of_birth])}]]
             [:> rb/Form.Group {:controlId "formGroupGender"}
              [:> rb/Form.Control
               {:as "select",
                :custom "custom",
                :value gender,
-               :on-change #(swap! form assoc
-                             :gender
-                             (-> %
-                                 .-target
-                                 .-value))} [:option "male"]
+               :on-change #(rf/dispatch [:change-new-patient (.. % -target -value) :gender])} [:option "male"]
               [:option "female"]]]
             [:> rb/Form.Group {:controlId "formGroupAddress"}
              [:> rb/Form.Label "Address"]
              [:> rb/Form.Control
               {:type "text",
                :value address,
-               :on-change #(swap! form assoc
-                             :address
-                             (-> %
-                                 .-target
-                                 .-value))}]]
+               :on-change #(rf/dispatch [:change-new-patient (.. % -target -value) :address])}]]
             [:> rb/Form.Group {:controlId "formGroupHealthInsuranceNumber"}
              [:> rb/Form.Label "Health Insurance Number"]
              [:> rb/Form.Control
               {:type "text",
                :value health_insurance_number,
-               :on-change #(swap! form assoc
-                             :health_insurance_number
-                             (-> %
-                                 .-target
-                                 .-value))}]]
+               :on-change #(rf/dispatch [:change-new-patient (.. % -target -value) :health_insurance_number])}]]
             [:> rb/Button {:variant "primary", :type "submit"} "Submit"]]]]]))))
 
 (defn edit-patient
