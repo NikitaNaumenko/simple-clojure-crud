@@ -5,43 +5,43 @@
 
 (defn home [] [:h1 "hello"])
 
-(defn search []
+(defn search
+  []
   (let [sub (rf/subscribe [:filter])
         on-search #(rf/dispatch [:filter-table (.. % -target -value)])]
     (fn []
       (let [m @sub]
-        [:input.search {:placeholder "Search" :on-change on-search :value m}]))))
+        [:input.search
+         {:placeholder "Search", :on-change on-search, :value m}]))))
 
 (defn patients
   []
-  (fn []
-      [:div.container
-       [:div [search]]
-       [:div.row
-        [:div.col-12
-         (let [patients @(rf/subscribe [:patients])
-               columns ["Id" "Full Name" "Date of Birth" "Gender" "Address"
-                        "Health Insurance Number" ""]]
-           [:> rb/Table
-            [:thead [:tr (for [column columns] ^{:key column} [:th column])]]
-            [:tbody
-             (for [patient patients]
-               ^{:key (patient :id)}
-               [:tr [:td (patient :id)] [:td (patient :full_name)]
-                [:td (patient :date_of_birth)] [:td (patient :gender)]
-                [:td (patient :address)]
-                [:td (patient :health_insurance_number)]
-                [:td
-                 [:a
-                  {:href (str "#/patients/" (patient :id)),
-                   :class "btn btn-primary"} "Show"]
-                 [:a
-                  {:href (str "#/patients/" (patient :id) "/edit"),
-                   :class "btn btn-primary"} "Edit"]
-                 [:a
-                  {:href "#/patients",
-                   :on-click #(rf/dispatch [:delete-patient (patient :id)]),
-                   :class "btn btn-danger"} "Delete"]]])]])]]]))
+  (fn [] [:div.container [:div [search]]
+          [:div.row
+           [:div.col-12
+            (let [patients @(rf/subscribe [:patients])
+                  columns ["Id" "Full Name" "Date of Birth" "Gender" "Address"
+                           "Health Insurance Number" ""]]
+              [:> rb/Table
+               [:thead [:tr (for [column columns] ^{:key column} [:th column])]]
+               [:tbody
+                (for [patient patients]
+                  ^{:key (patient :id)}
+                  [:tr [:td (patient :id)] [:td (patient :full_name)]
+                   [:td (patient :date_of_birth)] [:td (patient :gender)]
+                   [:td (patient :address)]
+                   [:td (patient :health_insurance_number)]
+                   [:td
+                    [:a
+                     {:href (str "#/patients/" (patient :id)),
+                      :class "btn btn-primary"} "Show"]
+                    [:a
+                     {:href (str "#/patients/" (patient :id) "/edit"),
+                      :class "btn btn-primary"} "Edit"]
+                    [:a
+                     {:href "#/patients",
+                      :on-click #(rf/dispatch [:delete-patient (patient :id)]),
+                      :class "btn btn-danger"} "Delete"]]])]])]]]))
 
 (defn new-patient
   []
@@ -63,113 +63,102 @@
               {:type "text",
                :placeholder "Enter Full Name",
                :value full_name,
-               :on-change #(rf/dispatch [:change-new-patient (.. % -target -value) :full_name])}]]
+               :on-change #(rf/dispatch [:change-new-patient
+                                         (.. % -target -value) :full_name])}]]
             [:> rb/Form.Group {:controlId "formGroupDateOfBirth"}
              [:> rb/Form.Label "Date of Birth"]
              [:> rb/Form.Control
               {:type "date",
                :value date_of_birth,
-               :on-change #(rf/dispatch [:change-new-patient (.. % -target -value) :date_of_birth])}]]
+               :on-change #(rf/dispatch [:change-new-patient
+                                         (.. % -target -value)
+                                         :date_of_birth])}]]
             [:> rb/Form.Group {:controlId "formGroupGender"}
              [:> rb/Form.Control
               {:as "select",
                :custom "custom",
                :value gender,
-               :on-change #(rf/dispatch [:change-new-patient (.. % -target -value) :gender])} [:option "male"]
-              [:option "female"]]]
+               :on-change #(rf/dispatch [:change-new-patient
+                                         (.. % -target -value) :gender])}
+              [:option "male"] [:option "female"]]]
             [:> rb/Form.Group {:controlId "formGroupAddress"}
              [:> rb/Form.Label "Address"]
              [:> rb/Form.Control
               {:type "text",
                :value address,
-               :on-change #(rf/dispatch [:change-new-patient (.. % -target -value) :address])}]]
+               :on-change #(rf/dispatch [:change-new-patient
+                                         (.. % -target -value) :address])}]]
             [:> rb/Form.Group {:controlId "formGroupHealthInsuranceNumber"}
              [:> rb/Form.Label "Health Insurance Number"]
              [:> rb/Form.Control
               {:type "text",
                :value health_insurance_number,
-               :on-change #(rf/dispatch [:change-new-patient (.. % -target -value) :health_insurance_number])}]]
+               :on-change #(rf/dispatch [:change-new-patient
+                                         (.. % -target -value)
+                                         :health_insurance_number])}]]
             [:> rb/Button {:variant "primary", :type "submit"} "Submit"]]]]]))))
 
 (defn edit-patient
   []
-  (let [{full_name :full_name,
-         id :id,
-         date_of_birth :date_of_birth,
-         address :address,
-         gender :gender,
-         health_insurance_number :health_insurance_number}
-          @(rf/subscribe [:edited-patient])
-        default {:full_name full_name,
-                 :date_of_birth date_of_birth,
-                 :address address,
-                 :gender gender,
-                 :health_insurance_number health_insurance_number}
-        form (reagent/atom default)]
-    (let [loaded @(rf/subscribe [:loaded-patient])
-          update-patient (fn [event form]
-                           (.preventDefault event)
-                           (rf/dispatch [:update-patient form id]))]
-      (when loaded
-        (fn [] [:div.container [:div.text-center.p-2 [:h1 "Edit Patient"]]
-                [:div.row.justify-content-center
-                 [:div.col-8
-                  [:> rb/Form {:on-submit #(update-patient % @form)}
-                   [:> rb/Form.Group {:controlId "formGroupFullName"}
-                    [:> rb/Form.Label "Full Name"]
-                    [:> rb/Form.Control
-                     {:type "text",
-                      :placeholder "Enter Full Name",
-                      :default-value full_name,
-                      :on-change #(swap! form assoc
-                                    :full_name
-                                    (-> %
-                                        .-target
-                                        .-value))}]]
-                   [:> rb/Form.Group {:controlId "formGroupDateOfBirth"}
-                    [:> rb/Form.Label "Date of Birth"]
-                    [:> rb/Form.Control
-                     {:type "date",
-                      :default-value date_of_birth,
-                      :on-change #(swap! form assoc
-                                    :date_of_birth
-                                    (-> %
-                                        .-target
-                                        .-value))}]]
-                   [:> rb/Form.Group {:controlId "formGroupGender"}
-                    [:> rb/Form.Control
-                     {:as "select",
-                      :custom "custom",
-                      :default-value gender,
-                      :on-change #(swap! form assoc
-                                    :gender
-                                    (-> %
-                                        .-target
-                                        .-value))} [:option "male"]
-                     [:option "female"]]]
-                   [:> rb/Form.Group {:controlId "formGroupAddress"}
-                    [:> rb/Form.Label "Address"]
-                    [:> rb/Form.Control
-                     {:type "text",
-                      :default-value address,
-                      :on-change #(swap! form assoc
-                                    :address
-                                    (-> %
-                                        .-target
-                                        .-value))}]]
-                   [:> rb/Form.Group
-                    {:controlId "formGroupHealthInsuranceNumber"}
-                    [:> rb/Form.Label "Health Insurance Number"]
-                    [:> rb/Form.Control
-                     {:type "text",
-                      :default-value health_insurance_number,
-                      :on-change #(swap! form assoc
-                                    :health_insurance_number
-                                    (-> %
-                                        .-target
-                                        .-value))}]]
-                   [:> rb/Button {:variant "primary", :type "submit"}
-                    "Submit"]]]]])))))
+  (let [loaded @(rf/subscribe [:loaded-patient])]
+    (when loaded
+      (fn []
+        (let [form (rf/subscribe [:edited-patient])
+              {id :id,
+               full_name :full_name,
+               gender :gender,
+               health_insurance_number :health_insurance_number,
+               date_of_birth :date_of_birth,
+               address :address}
+                @form
+              update-patient (fn [event form]
+                               (.preventDefault event)
+                               (rf/dispatch [:update-patient form id]))]
+          [:div.container [:div.text-center.p-2 [:h1 "Edit Patient"]]
+           [:div.row.justify-content-center
+            [:div.col-8
+             [:> rb/Form {:on-submit #(update-patient % @form)}
+              [:> rb/Form.Group {:controlId "formGroupFullName"}
+               [:> rb/Form.Label "Full Name"]
+               [:> rb/Form.Control
+                {:type "text",
+                 :placeholder "Enter Full Name",
+                 :value full_name,
+                 :on-change #(rf/dispatch [:change-edited-patient
+                                           (.. % -target -value) :full_name])}]]
+              [:> rb/Form.Group {:controlId "formGroupDateOfBirth"}
+               [:> rb/Form.Label "Date of Birth"]
+               [:> rb/Form.Control
+                {:type "date",
+                 :value date_of_birth,
+                 :on-change #(rf/dispatch [:change-edited-patient
+                                           (.. % -target -value)
+                                           :date_of_birth])}]]
+              [:> rb/Form.Group {:controlId "formGroupGender"}
+               [:> rb/Form.Control
+                {:as "select",
+                 :custom "custom",
+                 :value gender,
+                 :on-change #(rf/dispatch [:change-edited-patient
+                                           (.. % -target -value) :gender])}
+                [:option "male"] [:option "female"]]]
+              [:> rb/Form.Group {:controlId "formGroupAddress"}
+               [:> rb/Form.Label "Address"]
+               [:> rb/Form.Control
+                {:type "text",
+                 :value address,
+                 :on-change #(rf/dispatch [:change-edited-patient
+                                           (.. % -target -value) :address])}]]
+              [:> rb/Form.Group {:controlId "formGroupHealthInsuranceNumber"}
+               [:> rb/Form.Label "Health Insurance Number"]
+               [:> rb/Form.Control
+                {:type "text",
+                 :value health_insurance_number,
+                 :on-change #(rf/dispatch [:change-edited-patient
+                                           (.. % -target -value)
+                                           :health_insurance_number])}]]
+              [:> rb/Button {:variant "primary", :type "submit"}
+               "Submit"]]]]])))))
 
 (defn show-patient
   []

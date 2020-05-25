@@ -18,10 +18,13 @@
 
 (secretary/set-config! :prefix "#")
 (defroute "/" [] (rf/dispatch [:set-active-page {:page :home}]))
-(defroute "/patients/new" []
-          (rf/dispatch [:set-active-page {:page :new-patient}]) )
-(defroute "/patients" [query-params]
-  (rf/dispatch [:set-active-page {:page :patients :query query-params}]))
+(defroute "/patients/new"
+          []
+          (rf/dispatch [:set-active-page {:page :new-patient}]))
+(defroute "/patients"
+          [query-params]
+          (rf/dispatch [:set-active-page
+                        {:page :patients, :query query-params}]))
 
 (defroute "/patients/:id"
           [id]
@@ -29,12 +32,11 @@
 (defroute "/patients/:id/edit"
           [id]
           (rf/dispatch [:set-active-page {:page :edit-patient, :id id}]))
-  
+
 (def history
   (doto (History.)
     (events/listen EventType.NAVIGATE
-                   (fn [event]
-                     (secretary/dispatch! (.-token event))))
+                   (fn [event] (secretary/dispatch! (.-token event))))
     (.setEnabled true)))
 
-(defn ^:export main []  (reload!))
+(defn ^:export main [] (reload!))

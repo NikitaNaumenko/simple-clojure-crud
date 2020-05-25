@@ -16,4 +16,3 @@
 (rf/reg-sub :flash-message (fn [db _] (:flash-message db)))
 (rf/reg-sub :filter (fn [db _] (get db :filter)))
 (rf/reg-sub :new-patient (fn [db _] (get db :new-patient)))
-
