@@ -45,29 +45,33 @@
 
 (reg-event-fx
   :change-patient-insurance-number
-  (fn [{db :db} [_ value entity-key]]
+  (fn [{db :db} [_ value entity-key current_health_insurance_number]]
     (let [changed-patient (assoc (entity-key db)
                             :health_insurance_number value)]
       {:db (assoc db entity-key changed-patient),
-       :dispatch-debounce {:event [:validate-exists-insurance-number value],
+       :dispatch-debounce {:event [:validate-exists-insurance-number value
+                                   current_health_insurance_number],
                            :delay 300,
                            :key :health-insurance-number-exists?}})))
 
 (reg-event-fx
   :validate-exists-insurance-number
-  (fn [{db :db} [_ value]]
-    {:http-xhrio {:method :get,
-                  :uri "/validate-exists",
-                  :url-params {:health_insurance_number value,
-                               :attr :health_insurance_number},
-                  :format (ajax/json-request-format),
-                  :response-format (ajax/json-response-format {:keywords?
-                                                                 true}),
-                  :on-success [:validate-exists-insurance-number-success],
-                  :on-failure [::failure]}}))
+  (fn [{db :db} [_ value current_health_insurance_number]]
+    (println current_health_insurance_number)
+    (if-not (= value current_health_insurance_number)
+      {:http-xhrio {:method :get,
+                    :uri "/validate-exists",
+                    :url-params {:health_insurance_number value,
+                                 :attr :health_insurance_number},
+                    :format (ajax/json-request-format),
+                    :response-format (ajax/json-response-format {:keywords?
+                                                                   true}),
+                    :on-success [:validate-exists-insurance-number-success],
+                    :on-failure [::failure]}}
+      {:db (assoc db :health-insurance-number-exists? false)})))
 
 (reg-event-fx :validate-exists-insurance-number-success
-              (fn [{:keys [db]} [_ [{exists :exists}]]]
+              (fn [{db :db} [_ [{exists :exists}]]]
                 {:db (assoc db :health-insurance-number-exists? exists)}))
 
 (reg-event-fx
@@ -156,6 +160,8 @@
               (fn [db [_ {patient :patient}]]
                 (-> db
                     (assoc :edited-patient patient)
+                    (assoc :current_health_insurance_number
+                             (:health_insurance_number patient))
                     (assoc :loaded-patient true))))
 
 (reg-event-fx :update-patient

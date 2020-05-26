@@ -43,6 +43,10 @@
                       :on-click #(rf/dispatch [:delete-patient (patient :id)]),
                       :class "btn btn-danger"} "Delete"]]])]])]]]))
 
+(defn exists-error-partial
+  []
+  [:> rb/Alert {:key "error", :variant "danger"}
+   "Health insurance number already exists"])
 (defn new-patient
   []
   (let [form (rf/subscribe [:new-patient])]
@@ -56,10 +60,7 @@
                              (rf/dispatch [:create-patient form]))]
         [:div.container [:div.text-center.p-2 [:h1 "New Patient"]]
          [:div.row.justify-content-center
-          [:div.col-8
-           (when exists-error
-             [:> rb/Alert {:key "error", :variant "danger"}
-              "Health insurance number already exists"])
+          [:div.col-8 (when exists-error (exists-error-partial))
            [:> rb/Form {:on-submit #(create-patient % @form)}
             [:> rb/Form.Group {:controlId "formGroupFullName"}
              [:> rb/Form.Label "Full Name"]
@@ -103,7 +104,9 @@
 
 (defn edit-patient
   []
-  (let [loaded @(rf/subscribe [:loaded-patient])]
+  (let [loaded @(rf/subscribe [:loaded-patient])
+        current_health_insurance_number @(rf/subscribe
+                                           [:current_health_insurance_number])]
     (when loaded
       (fn []
         (let [form (rf/subscribe [:edited-patient])
@@ -114,10 +117,12 @@
                date_of_birth :date_of_birth,
                address :address}
                 @form
+              exists-error @(rf/subscribe [:health-insurance-number-exists?])
               update-patient (fn [event form]
                                (.preventDefault event)
                                (rf/dispatch [:update-patient form id]))]
           [:div.container [:div.text-center.p-2 [:h1 "Edit Patient"]]
+           (when exists-error (exists-error-partial))
            [:div.row.justify-content-center
             [:div.col-8
              [:> rb/Form {:on-submit #(update-patient % @form)}
@@ -157,9 +162,9 @@
                [:> rb/Form.Control
                 {:type "text",
                  :value health_insurance_number,
-                 :on-change #(rf/dispatch [:change-edited-patient
-                                           (.. % -target -value)
-                                           :health_insurance_number])}]]
+                 :on-change #(rf/dispatch [:change-patient-insurance-number
+                                           (.. % -target -value) :edited-patient
+                                           current_health_insurance_number])}]]
               [:> rb/Button {:variant "primary", :type "submit"}
                "Submit"]]]]])))))
 

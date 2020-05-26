@@ -9,6 +9,8 @@
             (fn [db _] (when (:loaded-patient db) (:edited-patient db))))
 
 (rf/reg-sub :loaded-patient (fn [db _] (:loaded-patient db)))
+(rf/reg-sub :current_health_insurance_number
+            (fn [db _] (:current_health_insurance_number db)))
 
 
 (rf/reg-sub :show-patient (fn [db _] (:patient db)))
