@@ -40,9 +40,35 @@
 
 (reg-event-fx :change-edited-patient
               (fn [{db :db} [_ value key]]
-                (println "jpa")
                 (let [changed-patient (assoc (:edited-patient db) key value)]
                   {:db (assoc db :edited-patient changed-patient)})))
+
+(reg-event-fx
+  :change-patient-insurance-number
+  (fn [{db :db} [_ value entity-key]]
+    (let [changed-patient (assoc (entity-key db)
+                            :health_insurance_number value)]
+      {:db (assoc db entity-key changed-patient),
+       :dispatch-debounce {:event [:validate-exists-insurance-number value],
+                           :delay 300,
+                           :key :health-insurance-number-exists?}})))
+
+(reg-event-fx
+  :validate-exists-insurance-number
+  (fn [{db :db} [_ value]]
+    {:http-xhrio {:method :get,
+                  :uri "/validate-exists",
+                  :url-params {:health_insurance_number value,
+                               :attr :health_insurance_number},
+                  :format (ajax/json-request-format),
+                  :response-format (ajax/json-response-format {:keywords?
+                                                                 true}),
+                  :on-success [:validate-exists-insurance-number-success],
+                  :on-failure [::failure]}}))
+
+(reg-event-fx :validate-exists-insurance-number-success
+              (fn [{:keys [db]} [_ [{exists :exists}]]]
+                {:db (assoc db :health-insurance-number-exists? exists)}))
 
 (reg-event-fx
   :set-active-page

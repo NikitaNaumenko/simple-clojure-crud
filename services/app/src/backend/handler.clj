@@ -49,6 +49,12 @@
   [db-connection id request]
   (db/destroy-patient db-connection (utils/parse-int id)))
 
+(defn validate-exists
+  [db-connection {params :params}]
+  (let [body (db/validate-exists db-connection
+                                 (clojure.walk/keywordize-keys params))]
+    {:status 200, :body body}))
+
 (def root-path "/")
 (defn root-path? [path] (= path root-path))
 
@@ -79,6 +85,8 @@
   (let [{id :id, :as route} (build-route request-method uri)]
     (match [route]
       [{:method :get, :route "/"}] (root)
+      [{:method :get, :route "validate-exists"}] (validate-exists db-connection
+                                                                  request)
       [{:method :get, :route "patients", :action :index}]
         (index-patients db-connection request)
       [{:method :get, :route "patients", :action :edit}]

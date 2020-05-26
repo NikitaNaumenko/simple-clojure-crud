@@ -50,12 +50,16 @@
       (let [{:keys [full_name date_of_birth address health_insurance_number
                     gender]}
               @form
+            exists-error @(rf/subscribe [:health-insurance-number-exists?])
             create-patient (fn [event form]
                              (.preventDefault event)
                              (rf/dispatch [:create-patient form]))]
         [:div.container [:div.text-center.p-2 [:h1 "New Patient"]]
          [:div.row.justify-content-center
           [:div.col-8
+           (when exists-error
+             [:> rb/Alert {:key "error", :variant "danger"}
+              "Health insurance number already exists"])
            [:> rb/Form {:on-submit #(create-patient % @form)}
             [:> rb/Form.Group {:controlId "formGroupFullName"}
              [:> rb/Form.Label "Full Name"]
@@ -93,9 +97,8 @@
              [:> rb/Form.Control
               {:type "text",
                :value health_insurance_number,
-               :on-change #(rf/dispatch [:change-new-patient
-                                         (.. % -target -value)
-                                         :health_insurance_number])}]]
+               :on-change #(rf/dispatch [:change-patient-insurance-number
+                                         (.. % -target -value) :new-patient])}]]
             [:> rb/Button {:variant "primary", :type "submit"} "Submit"]]]]]))))
 
 (defn edit-patient

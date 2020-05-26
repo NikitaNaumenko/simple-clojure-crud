@@ -52,3 +52,12 @@
 (defn destroy-patient [ds id] (sql/delete! ds :patients {:id id}))
 
 (defn delete-patients [ds] (jdbc/execute! ds ["DELETE FROM patients"]))
+
+(defmulti validate-exists (fn [_ params] (:attr params)))
+
+(defmethod validate-exists "health_insurance_number"
+  [ds {health_insurance_number :health_insurance_number}]
+  (sql/query
+    ds
+    ["SELECT EXISTS (SELECT 1 FROM patients WHERE health_insurance_number = ?)"
+     health_insurance_number]))
