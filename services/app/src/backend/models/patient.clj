@@ -7,14 +7,16 @@
 
 (defn create-patient
   [ds {:strs [full_name date_of_birth gender address health_insurance_number]}]
-  (let [parsed_date (utils/parse-date date_of_birth)]
-    (sql/insert! ds
-                 :patients
-                 {:full_name full_name,
-                  :date_of_birth parsed_date,
-                  :gender gender,
-                  :address address,
-                  :health_insurance_number health_insurance_number})))
+  (if (utils/right-format-date? date_of_birth)
+    (let [parsed_date (utils/parse-date date_of_birth)]
+      (sql/insert! ds
+                   :patients
+                   {:full_name full_name,
+                    :date_of_birth parsed_date,
+                    :gender gender,
+                    :address address,
+                    :health_insurance_number health_insurance_number}))
+    {:error "Wrong date format"}))
 
 (defn get-patients
   ([ds]
@@ -38,23 +40,24 @@
 (defn update-patient
   [ds id
    {:strs [full_name date_of_birth gender address health_insurance_number]}]
-  (let [parsed_date (utils/parse-date date_of_birth)
-        patient_id (utils/parse-int id)]
-    (sql/update! ds
-                 :patients
-                 {:full_name full_name,
-                  :date_of_birth parsed_date,
-                  :gender gender,
-                  :address address,
-                  :health_insurance_number health_insurance_number}
-                 {:id patient_id})))
+  (if (utils/right-format-date? date_of_birth)
+    (let [parsed_date (utils/parse-date date_of_birth)
+          patient_id (utils/parse-int id)]
+      (sql/update! ds
+                   :patients
+                   {:full_name full_name,
+                    :date_of_birth parsed_date,
+                    :gender gender,
+                    :address address,
+                    :health_insurance_number health_insurance_number}
+                   {:id patient_id}))
+    {:error "Wrong date format"}))
 
 (defn destroy-patient [ds id] (sql/delete! ds :patients {:id id}))
 
 (defn delete-patients [ds] (jdbc/execute! ds ["DELETE FROM patients"]))
 
 (defmulti validate-exists (fn [_ params] (:attr params)))
-
 (defmethod validate-exists "health_insurance_number"
   [ds {health_insurance_number :health_insurance_number}]
   (sql/query

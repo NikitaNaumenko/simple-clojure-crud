@@ -10,6 +10,7 @@
             [clojure.core.match :refer [match]]
             [ring.middleware.content-type :refer [wrap-content-type]]
             [backend.db :as db-connection]
+            [clj-time.format :as f]
             [clojure.string :as str]))
 
 (defn root [] {:status 200, :body (views/layout)})
@@ -21,9 +22,11 @@
 
 (defn create-patient
   [db-connection {params :params}]
-  (let [patient-params (get-in params ["patient"])
-        patient (db/create-patient db-connection patient-params)]
-    {:status 200, :body {:patient patient}}))
+  (let [patient-params (get params "patient")
+        result (db/create-patient db-connection patient-params)]
+    (if-not (:error result)
+      {:status 200, :body {:patient result}}
+      {:status 422, :body result})))
 
 (defn show-patient
   [db-connection id _]
@@ -37,13 +40,14 @@
         body {:patient (merge patient
                               {:date_of_birth (utils/date-to-str
                                                 date_of_birth)})}]
-    (if patient {:status 200, :body body} {:status 400})))
+    (if patient {:status 200, :body body} {:status 404})))
 
 (defn update-patient
   [db-connection id {params :params}]
-  (let [patient
-          (db/update-patient db-connection id (get-in params ["patient"]))]
-    {:status 200, :body {:patient patient}}))
+  (let [result (db/update-patient db-connection id (get params "patient"))]
+    (if-not (:error result)
+      {:status 200, :body {:patient result}}
+      {:status 422, :body result})))
 
 (defn destroy-patient
   [db-connection id request]

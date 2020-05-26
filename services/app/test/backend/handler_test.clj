@@ -41,6 +41,11 @@
     (is (= 200
            (:status (test-app (mock/request :get patient_path)))))))
 
+(deftest create-with-wrong-date-format-test
+  (is (= 422
+           (:status (test-app (-> (mock/request :post "/patients")
+                                  (mock/json-body {"patient" {"date_of_birth" "2020.02.02"}})))))))
+
 (deftest update-test
   (let [[patient] (get-patient-by-insurance-number insurance-number)
         patient_path (str "/patients/" (patient :patients/id))]
@@ -52,6 +57,13 @@
                                                      "gender" "male"
                                                      "address" "Bar"
                                                      "health_insurance_number" "12345678"}}))))))))
+(deftest update-with-wrong-date-format-test
+  (let [[patient] (get-patient-by-insurance-number insurance-number)
+        patient_path (str "/patients/" (patient :patients/id))]
+    (is (= 422
+           (:status (test-app
+                     (-> (mock/request :patch patient_path)
+                         (mock/json-body {"patient" { "date_of_birth" "2020.02.02"}}))))))))
 
 (deftest delete-test
   (let [[patient] (get-patient-by-insurance-number insurance-number)

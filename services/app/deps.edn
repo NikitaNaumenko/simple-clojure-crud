@@ -15,6 +15,7 @@
  :deps
    {cheshire #:mvn{:version "5.10.0"},
     clj-commons/secretary #:mvn{:version "1.2.4"},
+    clj-time #:mvn{:version "0.15.2"},
     compojure #:mvn{:version "1.6.1"},
     day8.re-frame/http-fx #:mvn{:version "v0.2.0"},
     hiccup #:mvn{:version "1.0.5"},
