@@ -20,3 +20,5 @@
 (rf/reg-sub :new-patient (fn [db _] (get db :new-patient)))
 (rf/reg-sub :health-insurance-number-exists?
             (fn [db _] (get db :health-insurance-number-exists?)))
+
+(rf/reg-sub :errors (fn [db _] (get db :errors)))

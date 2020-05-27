@@ -47,6 +47,12 @@
   []
   [:> rb/Alert {:key "error", :variant "danger"}
    "Health insurance number already exists"])
+
+(defn errors-partial
+  [error]
+  [:> rb/Alert {:key "error", :variant "danger"} error])
+
+
 (defn new-patient
   []
   (let [form (rf/subscribe [:new-patient])]
@@ -55,12 +61,14 @@
                     gender]}
               @form
             exists-error @(rf/subscribe [:health-insurance-number-exists?])
+            errors @(rf/subscribe [:errors])
             create-patient (fn [event form]
                              (.preventDefault event)
                              (rf/dispatch [:create-patient form]))]
         [:div.container [:div.text-center.p-2 [:h1 "New Patient"]]
          [:div.row.justify-content-center
           [:div.col-8 (when exists-error (exists-error-partial))
+           (when errors (errors-partial errors))
            [:> rb/Form {:on-submit #(create-patient % @form)}
             [:> rb/Form.Group {:controlId "formGroupFullName"}
              [:> rb/Form.Label "Full Name"]
@@ -73,7 +81,7 @@
             [:> rb/Form.Group {:controlId "formGroupDateOfBirth"}
              [:> rb/Form.Label "Date of Birth"]
              [:> rb/Form.Control
-              {:type "date",
+              {:type "text",
                :value date_of_birth,
                :on-change #(rf/dispatch [:change-new-patient
                                          (.. % -target -value)

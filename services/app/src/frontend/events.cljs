@@ -22,16 +22,20 @@
         query-string (gen-query-string (select-keys db [:filter]))]
     (str current-path query-string)))
 
-(reg-event-fx :set-hash
+
+(reg-fx :set-hash (fn [{:keys [hash]}] (set! (.-hash js/location) hash)))
+
+(reg-event-fx :set-query
               (fn [params]
                 (let [path (build-path (:db params))]
                   (set! (.-hash js/location) path))))
 
-(reg-event-fx :filter-table
-              (fn [{db :db} [_ q]]
-                {:dispatch-debounce
-                   {:event [:set-hash {:q q}], :delay 500, :key :tables-search},
-                 :db (assoc db :filter q)}))
+(reg-event-fx
+  :filter-table
+  (fn [{db :db} [_ q]]
+    {:dispatch-debounce
+       {:event [:set-query {:q q}], :delay 500, :key :tables-search},
+     :db (assoc db :filter q)}))
 
 (reg-event-fx :change-new-patient
               (fn [{db :db} [_ value key]]
@@ -120,15 +124,10 @@
                                                  {:keywords? true}),
                               :params {:patient params},
                               :on-success [:create-patient-success],
-                              :on-failure [:failure]}}))
+                              :on-failure [:failure-action]}}))
 
-(reg-event-fx
-  :create-patient-success
-  (fn [{:keys [db]} _]
-    {:db (assoc db
-           :flash-message {:flash-type "success",
-                           :flash-message "Patient was created successfully"}),
-     :set-hash {:hash "/patients"}}))
+(reg-event-fx :create-patient-success
+              (fn [{:keys [db]} _] {:set-hash {:hash "/patients"}}))
 
 (reg-event-fx :show-patient
               (fn [_ [_ {:keys [id]}]]
@@ -173,15 +172,14 @@
                                                  {:keywords? true}),
                               :params {:patient params},
                               :on-success [:update-patient-success],
-                              :on-failure [:failure]}}))
+                              :on-failure [:failure-action]}}))
 
-(reg-event-fx
-  :update-patient-success
-  (fn [{:keys [db]} _]
-    {:db (assoc db
-           :flash-message {:flash-type "success",
-                           :flash-message "Patient was updated successfully"}),
-     :set-hash {:hash "/patients"}}))
+(reg-event-fx :update-patient-success
+              (fn [{:keys [db]} _] {:set-hash {:hash "/patients"}}))
+
+(reg-event-fx :failure-action
+              (fn [{:keys [db]} [_ {response :response}]]
+                {:db (assoc db :errors (:error response))}))
 
 (reg-event-fx :delete-patient
               (fn [_ [_ id]]
@@ -193,10 +191,5 @@
                               :on-success [:delete-patient-success],
                               :on-failure [:failure]}}))
 
-(reg-event-db
-  :delete-patient-success
-  (fn [db [_ _]]
-    {:db (assoc db
-           :flash-message {:flash-type "success",
-                           :flash-message "Patient was deleted successfully"}),
-     :set-hash {:hash "/patients"}}))
+(reg-event-db :delete-patient-success
+              (fn [db [_ _]] {:set-hash {:hash "/patients"}}))
