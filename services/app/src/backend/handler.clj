@@ -10,7 +10,6 @@
             [clojure.core.match :refer [match]]
             [ring.middleware.content-type :refer [wrap-content-type]]
             [backend.db :as db-connection]
-            [clj-time.format :as f]
             [clojure.string :as str]))
 
 (defn root [] {:status 200, :body (views/layout)})

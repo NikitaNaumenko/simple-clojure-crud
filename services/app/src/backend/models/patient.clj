@@ -16,7 +16,7 @@
                     :gender gender,
                     :address address,
                     :health_insurance_number health_insurance_number}))
-    {:error "Wrong date format"}))
+    {:error "Wrong date format, right format is yyyy-MM-dd"}))
 
 (defn get-patients
   ([ds]

@@ -61,7 +61,6 @@
 (reg-event-fx
   :validate-exists-insurance-number
   (fn [{db :db} [_ value current_health_insurance_number]]
-    (println current_health_insurance_number)
     (if-not (= value current_health_insurance_number)
       {:http-xhrio {:method :get,
                     :uri "/validate-exists",
@@ -80,11 +79,14 @@
 
 (reg-event-fx
   :set-active-page
-  (fn [{:keys [db]} [_ {:keys [page id]}]]
-    (let [set-page (assoc db :active-page page)]
+  (fn [{:keys [db]} [_ {:keys [page id query]}]]
+    (let [set-page (-> db
+                       (assoc :active-page page) 
+                       (merge query))]
       (case page
         :home {:db set-page}
-        :patients {:db set-page, :dispatch-n (list [:get-patients])}
+        :patients {:db set-page
+                   :dispatch [:get-patients]}
         :edit-patient {:db (assoc set-page :edit-patient id),
                        :dispatch [:edit-patient {:id id}]}
         :show-patient {:db (assoc set-page :show-patient id),
